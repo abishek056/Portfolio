@@ -13,7 +13,7 @@ export interface Skill {
 }
 
 export const NAV_LINKS = [
-  { name: 'Hero', href: '#hero' },
+  { name: 'Home', href: '#home' },
   { name: 'About', href: '#about' },
   { name: 'Projects', href: '#projects' },
   { name: 'Skills', href: '#skills' },
