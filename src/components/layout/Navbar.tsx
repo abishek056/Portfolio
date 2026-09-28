@@ -6,14 +6,14 @@ export const Navbar: React.FC = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-neutral-950/80 border-b border-neutral-800/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <a href="#hero" className="flex items-center gap-3 group">
+        <a href="#home" className="flex items-center gap-3 group">
           <img
             src={logoImg}
             alt="Logo"
             className="w-9 h-9 object-contain rounded-lg border border-neutral-800 group-hover:border-indigo-500/50 transition-colors"
           />
           <span className="font-bold text-lg text-white tracking-tight group-hover:text-indigo-400 transition-colors">
-            Portfolio
+            Abishek Adhikari
           </span>
         </a>
 

@@ -3,9 +3,9 @@ import profileImg from '../../assets/image/home/profile1.jpg'
 import { CanvasPlaceholder } from '../3d/CanvasPlaceholder'
 import { Button } from '../ui/Button'
 
-export const Hero: React.FC = () => {
+export const Home: React.FC = () => {
   return (
-    <section id="hero" className="min-h-screen pt-28 pb-16 flex items-center relative overflow-hidden">
+    <section id="home" className="min-h-screen pt-28 pb-16 flex items-center relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-7 space-y-6 text-left">
@@ -46,7 +46,7 @@ export const Hero: React.FC = () => {
 
             <div className="w-full max-w-md">
               <CanvasPlaceholder
-                title="3D Hero Canvas"
+                title="3D Home Canvas"
                 subtitle="Ready for Three.js / React Three Fiber interactive scene"
               />
             </div>

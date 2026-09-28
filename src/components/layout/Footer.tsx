@@ -13,7 +13,7 @@ export const Footer: React.FC = () => {
           © {new Date().getFullYear()} All rights reserved. Crafted with React, Tailwind CSS, & Vite.
         </p>
         <div className="flex items-center space-x-6 text-sm text-neutral-400">
-          <a href="#hero" className="hover:text-neutral-200 transition-colors">
+          <a href="#home" className="hover:text-neutral-200 transition-colors">
             Back to Top ↑
           </a>
         </div>
