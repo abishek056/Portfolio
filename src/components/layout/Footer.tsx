@@ -1,0 +1,23 @@
+import React from 'react'
+import logoImg from '../../assets/image/logo.png'
+
+export const Footer: React.FC = () => {
+  return (
+    <footer className="border-t border-neutral-800/80 bg-neutral-950/90 py-10 mt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex items-center gap-3">
+          <img src={logoImg} alt="Logo" className="w-8 h-8 object-contain rounded" />
+          <span className="font-semibold text-neutral-300">Portfolio</span>
+        </div>
+        <p className="text-xs text-neutral-500">
+          © {new Date().getFullYear()} All rights reserved. Crafted with React, Tailwind CSS, & Vite.
+        </p>
+        <div className="flex items-center space-x-6 text-sm text-neutral-400">
+          <a href="#hero" className="hover:text-neutral-200 transition-colors">
+            Back to Top ↑
+          </a>
+        </div>
+      </div>
+    </footer>
+  )
+}
