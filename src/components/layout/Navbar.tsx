@@ -1,6 +1,6 @@
 import React from 'react'
 import logoImg from '../../assets/image/logo.png'
-import { NAV_LINKS } from '../../data/portfolioData'
+import { NAV_LINKS, PERSONAL_INFO } from '../../data/portfolio'
 
 export const Navbar: React.FC = () => {
   return (
@@ -13,7 +13,7 @@ export const Navbar: React.FC = () => {
             className="w-9 h-9 object-contain rounded-lg border border-neutral-800 group-hover:border-indigo-500/50 transition-colors"
           />
           <span className="font-bold text-lg text-white tracking-tight group-hover:text-indigo-400 transition-colors">
-            Abishek Adhikari
+            {PERSONAL_INFO.name}
           </span>
         </a>
 

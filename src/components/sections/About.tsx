@@ -1,5 +1,6 @@
 import React from 'react'
 import aboutImg from '../../assets/image/about/about.jpg'
+import { PERSONAL_INFO } from '../../data/portfolio'
 import { Card } from '../ui/Card'
 
 export const About: React.FC = () => {
@@ -11,10 +12,10 @@ export const About: React.FC = () => {
             About Me
           </h2>
           <p className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-            Passionate developer & digital craftsman
+            Passionate {PERSONAL_INFO.title} & Problem Solver
           </p>
           <p className="text-sm sm:text-base text-neutral-400">
-            A quick glimpse into my background, passions, and design philosophy.
+            A quick glimpse into my background, passions, and engineering philosophy.
           </p>
         </div>
 
@@ -25,7 +26,7 @@ export const About: React.FC = () => {
               <div className="relative rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900 shadow-xl aspect-4/5">
                 <img
                   src={aboutImg}
-                  alt="About me portrait"
+                  alt={PERSONAL_INFO.name}
                   className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
@@ -34,23 +35,26 @@ export const About: React.FC = () => {
 
           <div className="lg:col-span-7 space-y-6 text-left">
             <h3 className="text-2xl font-bold text-white">
-              Hi, I am dedicated to building responsive, intuitive web experiences.
+              Hi, I'm {PERSONAL_INFO.name} — bridging full-stack systems with smooth user experiences.
             </h3>
             <p className="text-neutral-300 leading-relaxed">
-              I specialize in frontend architecture, modern CSS styling with Tailwind CSS, and creating high-performance interactive interfaces. I love transforming intricate design ideas into fluid, responsive, accessible code.
+              I specialize in end-to-end web engineering, from scalable backend APIs in Laravel and Django to responsive, performant user interfaces built with React and Tailwind CSS.
+            </p>
+            <p className="text-neutral-400 text-sm leading-relaxed">
+              Whether building real-time hospital dispatch platforms like HealthHub, e-commerce storefronts, or role-based management portals, I prioritize clean architecture, maintainability, and exceptional UI craftsmanship.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               <Card className="p-4">
-                <h4 className="text-indigo-400 font-semibold text-sm mb-1">Architecture & Clean Code</h4>
+                <h4 className="text-indigo-400 font-semibold text-sm mb-1">Full-Stack Architecture</h4>
                 <p className="text-xs text-neutral-400">
-                  Writing scalable, maintainable TypeScript and modular component systems.
+                  Designing resilient backend services, authentication systems, and database models in Laravel & Django.
                 </p>
               </Card>
               <Card className="p-4">
-                <h4 className="text-indigo-400 font-semibold text-sm mb-1">Interactive & 3D Elements</h4>
+                <h4 className="text-indigo-400 font-semibold text-sm mb-1">Modern UI & Real-Time UX</h4>
                 <p className="text-xs text-neutral-400">
-                  Blending smooth micro-interactions, canvas graphics, and modern UI.
+                  Building fluid interfaces with React, Tailwind CSS, WebSockets, and interactive visual components.
                 </p>
               </Card>
             </div>
