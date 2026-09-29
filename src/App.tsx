@@ -1,7 +1,7 @@
 import React from 'react'
 import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/layout/Footer'
-import { Home } from './components/sections/Home'
+import { Hero } from './components/sections/Hero'
 import { About } from './components/sections/About'
 import { Projects } from './components/sections/Projects'
 import { Skills } from './components/sections/Skills'
@@ -13,7 +13,7 @@ export const App: React.FC = () => {
       <Navbar />
 
       <main className="grow">
-        <Home />
+        <Hero />
         <About />
         <Projects />
         <Skills />
