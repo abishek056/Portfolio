@@ -1,5 +1,6 @@
 import React from 'react'
 import profileImg from '../../assets/image/home/profile1.jpg'
+import { PERSONAL_INFO } from '../../data/portfolio'
 import { CanvasPlaceholder } from '../3d/CanvasPlaceholder'
 import { Button } from '../ui/Button'
 
@@ -13,23 +14,31 @@ export const Hero: React.FC = () => {
           <div className="lg:col-span-7 space-y-6 text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-950/40 text-xs font-medium text-indigo-300">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              Available for new projects
+              {PERSONAL_INFO.availableForHire ? 'Available for new projects' : 'Building cool things'}
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight">
-              Crafting <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">digital experiences</span> that inspire.
-            </h1>
+            <div className="space-y-2">
+              <p className="text-sm font-semibold tracking-wider text-indigo-400 uppercase">
+                Hi, I'm {PERSONAL_INFO.name}
+              </p>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                {PERSONAL_INFO.title} crafting <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">digital experiences</span> that inspire.
+              </h1>
+            </div>
 
             <p className="text-base sm:text-lg text-neutral-400 max-w-xl">
-              Welcome to my portfolio! I build performant web applications, modern interfaces, and interactive 3D elements with clean code and cutting-edge web technologies.
+              {PERSONAL_INFO.bio}
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <a href="#projects">
                 <Button variant="primary">Explore Projects</Button>
               </a>
+              <a href={PERSONAL_INFO.github} target="_blank" rel="noopener noreferrer">
+                <Button variant="secondary">GitHub Profile &rarr;</Button>
+              </a>
               <a href="#contact">
-                <Button variant="secondary">Contact Me</Button>
+                <Button variant="outline">Contact Me</Button>
               </a>
             </div>
           </div>
@@ -40,7 +49,7 @@ export const Hero: React.FC = () => {
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900 shadow-2xl">
                 <img
                   src={profileImg}
-                  alt="Profile"
+                  alt={PERSONAL_INFO.name}
                   className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
