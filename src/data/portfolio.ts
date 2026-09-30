@@ -16,6 +16,7 @@ export interface Project {
   id: string
   title: string
   description: string
+  image?: string
   stack: string[]
   tags: string[]
   category: ProjectCategory
@@ -66,6 +67,7 @@ export const PROJECTS: Project[] = [
     title: 'HealthHub',
     description:
       'Hospital management & emergency platform featuring hospital discovery, bed & ambulance tracking, OPD queue, blood bank, appointments, and real-time updates.',
+    image: '/src/assets/images/projects/healthhub.png',
     stack: [
       'Laravel 13',
       'PHP 8.3',
@@ -98,6 +100,7 @@ export const PROJECTS: Project[] = [
     title: 'UrbanStyle',
     description:
       'Fashion e-commerce store with cart, user orders, and full admin panel for products, inventory and billing.',
+    image: '/src/assets/images/projects/urbanstyle.png',
     stack: ['React', 'Vite', 'Tailwind CSS'],
     tags: ['React', 'Vite', 'Tailwind CSS', 'E-Commerce'],
     category: 'Frontend',
@@ -111,6 +114,7 @@ export const PROJECTS: Project[] = [
     title: 'Complaint Management System',
     description:
       'Django-based complaint system with role-based access (User/Staff/Admin), dashboards, search & filters, comments timeline and email notifications.',
+    image: '/src/assets/images/projects/complaint.png',
     stack: ['Django 6.0', 'Python', 'Bootstrap 5', 'SQLite / PostgreSQL'],
     tags: ['Django 6.0', 'Python', 'Bootstrap 5', 'RBAC', 'Email Alerts'],
     category: 'Backend',
@@ -123,6 +127,7 @@ export const PROJECTS: Project[] = [
     title: 'Portfolio-',
     description:
       'Personal portfolio with 3D visuals, smooth animations, and dark mode.',
+    image: '/src/assets/images/projects/portfolio.png',
     stack: ['React', 'Vite', 'Tailwind CSS'],
     tags: ['React', 'Vite', 'Tailwind CSS', '3D Visuals', 'Dark Mode'],
     category: 'Frontend',
@@ -135,6 +140,7 @@ export const PROJECTS: Project[] = [
     id: 'dream-cafe',
     title: 'Dream-Cafe',
     description: 'Modern cafe website with clean and responsive UI.',
+    image: '/src/assets/images/projects/dreamcafe.png',
     stack: ['HTML', 'Tailwind CSS'],
     tags: ['HTML5', 'Tailwind CSS', 'Responsive UI'],
     category: 'Frontend',
