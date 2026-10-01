@@ -4,11 +4,11 @@ import { ArrowUpRight, Sparkles, Layers, Terminal } from 'lucide-react'
 import type { Project } from '../../../data/portfolio'
 
 // Direct Vite asset imports for guaranteed bundling
-import healthhubImg from '../../../assets/images/projects/healthhub.png'
-import urbanstyleImg from '../../../assets/images/projects/urbanstyle.png'
-import complaintImg from '../../../assets/images/projects/complaint.png'
-import portfolioImg from '../../../assets/images/projects/portfolio.png'
-import dreamcafeImg from '../../../assets/images/projects/dreamcafe.png'
+import healthhubImg from '../../../assets/image/projects/healthhub.png'
+import urbanstyleImg from '../../../assets/image/projects/urbanstyle.png'
+import complaintImg from '../../../assets/image/projects/complaint.png'
+import portfolioImg from '../../../assets/image/projects/portfolio.png'
+import dreamcafeImg from '../../../assets/image/projects/dreamcafe.png'
 
 const projectImageMap: Record<string, string> = {
   healthhub: healthhubImg,
@@ -152,9 +152,9 @@ export const ProjectCard3D: React.FC<ProjectCard3DProps> = ({ project, index }) 
           {/* Top Section: Card Header & Image (Depth Layer 1) */}
           <div className="p-5 pb-0 flex flex-col gap-4" style={{ transform: 'translateZ(15px)' }}>
             {/* Project Image Frame with macOS Window Chrome */}
-            <div className="relative rounded-xl overflow-hidden border border-neutral-800 bg-neutral-950/70 shadow-inner group/img aspect-16/9">
+            <div className="relative rounded-xl overflow-hidden border border-neutral-800 bg-neutral-950/90 shadow-md group/img flex flex-col">
               {/* Window Chrome Titlebar */}
-              <div className="relative z-20 flex items-center justify-between px-3 py-2 bg-neutral-950/90 border-b border-neutral-800/80 backdrop-blur-md">
+              <div className="relative z-20 flex items-center justify-between px-3 py-2 bg-neutral-950/95 border-b border-neutral-800/80 backdrop-blur-md shrink-0">
                 <div className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
@@ -175,7 +175,7 @@ export const ProjectCard3D: React.FC<ProjectCard3DProps> = ({ project, index }) 
               </div>
 
               {/* Image Preview with Zoom Effect */}
-              <div className="relative w-full h-full overflow-hidden bg-neutral-900">
+              <div className="relative w-full aspect-video overflow-hidden bg-neutral-950">
                 <img
                   src={resolvedImage}
                   alt={project.title}
