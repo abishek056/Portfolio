@@ -5,6 +5,7 @@ export interface PersonalInfo {
   shortBio: string
   github: string
   linkedin: string
+  facebook: string
   email: string
   location?: string
   availableForHire?: boolean
@@ -47,8 +48,9 @@ export const PERSONAL_INFO: PersonalInfo = {
     'Full-Stack Developer building robust web platforms, real-time architectures, and interactive digital interfaces.',
   bio: 'Passionate Full-Stack Developer with expertise across modern frontend ecosystems and scalable backend architectures. Experienced in building high-impact web applications, emergency management systems, and e-commerce platforms using Laravel, React, Django, and modern cloud technologies.',
   github: 'https://github.com/abishek056',
-  linkedin: 'https://linkedin.com/in/abishek-adhikari', // placeholder
-  email: 'abishek.adhikari.dev@gmail.com', // placeholder
+  linkedin: 'https://www.linkedin.com/feed/',
+  facebook: 'https://www.facebook.com/',
+  email: 'abishekadhikari056@gmail.com',
   location: 'Nepal',
   availableForHire: true,
 }
