@@ -81,6 +81,8 @@ const ParticlesCanvas: React.FC = () => {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    let isVisible = false
+
     const resize = () => {
       canvas.width = canvas.offsetWidth
       canvas.height = canvas.offsetHeight
@@ -91,6 +93,7 @@ const ParticlesCanvas: React.FC = () => {
     ro.observe(canvas)
 
     const animate = () => {
+      if (!isVisible) return
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       particlesRef.current.forEach((p) => {
         p.x += p.vx; p.y += p.vy; p.rotation += p.rotSpeed
@@ -102,9 +105,24 @@ const ParticlesCanvas: React.FC = () => {
       })
       rafRef.current = requestAnimationFrame(animate)
     }
-    animate()
 
-    return () => { cancelAnimationFrame(rafRef.current); ro.disconnect() }
+    const io = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting
+      if (isVisible) {
+        cancelAnimationFrame(rafRef.current)
+        rafRef.current = requestAnimationFrame(animate)
+      } else {
+        cancelAnimationFrame(rafRef.current)
+      }
+    }, { threshold: 0.05, rootMargin: '100px' })
+
+    io.observe(canvas)
+
+    return () => {
+      cancelAnimationFrame(rafRef.current)
+      ro.disconnect()
+      io.disconnect()
+    }
   }, [initParticles])
 
   return (

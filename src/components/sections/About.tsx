@@ -34,6 +34,7 @@ export const About: React.FC = () => {
   const glareY = useTransform(smoothY, [-0.5, 0.5], [20, 80])
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return
     if (!portraitRef.current) return
     const rect = portraitRef.current.getBoundingClientRect()
     const x = (e.clientX - rect.left) / rect.width - 0.5

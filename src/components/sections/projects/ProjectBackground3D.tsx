@@ -20,7 +20,7 @@ export const ProjectBackground3D: React.FC = () => {
       'rgba(168, 85, 247, 0.45)', // Purple
       'rgba(236, 72, 153, 0.35)', // Pink
     ]
-    return Array.from({ length: 24 }).map((_, i) => ({
+    return Array.from({ length: 16 }).map((_, i) => ({
       id: i,
       x: (i * 17 + 7) % 96 + 2,
       y: (i * 23 + 13) % 94 + 3,
@@ -34,9 +34,9 @@ export const ProjectBackground3D: React.FC = () => {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
       {/* Ambient Radial Color Glows */}
-      <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-indigo-600/10 blur-[130px]" />
-      <div className="absolute top-2/3 -right-32 w-[550px] h-[550px] rounded-full bg-purple-600/10 blur-[140px]" />
-      <div className="absolute -bottom-20 left-1/3 w-[450px] h-[450px] rounded-full bg-cyan-600/10 blur-[130px]" />
+      <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-indigo-600/10 blur-[130px] pointer-events-none" />
+      <div className="absolute top-2/3 -right-32 w-[550px] h-[550px] rounded-full bg-purple-600/10 blur-[140px] pointer-events-none" />
+      <div className="absolute -bottom-20 left-1/3 w-[450px] h-[450px] rounded-full bg-cyan-600/10 blur-[130px] pointer-events-none" />
 
       {/* Cyber Grid with Elliptical Radial Mask */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#312e810c_1px,transparent_1px),linear-gradient(to_bottom,#312e810c_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_80%_65%_at_50%_50%,#000_50%,transparent_90%)] opacity-70" />
@@ -44,17 +44,17 @@ export const ProjectBackground3D: React.FC = () => {
       {/* Floating 3D Geometric Shape 1: Floating Icosahedron Wireframe (Top Right) */}
       <motion.div
         animate={{
-          y: [-12, 16, -12],
+          y: [-10, 14, -10],
           rotate: [0, 180, 360],
-          rotateX: [15, 35, 15],
+          rotateX: [15, 30, 15],
         }}
         transition={{
-          duration: 22,
+          duration: 24,
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className="absolute top-12 right-[8%] w-32 h-32 opacity-25 hidden md:block"
-        style={{ perspective: 800 }}
+        className="absolute top-12 right-[8%] w-28 h-28 opacity-25 hidden md:block transform-gpu"
+        style={{ perspective: 800, willChange: 'transform' }}
       >
         <svg viewBox="0 0 100 100" className="w-full h-full stroke-indigo-400 fill-none" strokeWidth="1">
           <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" strokeDasharray="3 3" />
@@ -69,16 +69,17 @@ export const ProjectBackground3D: React.FC = () => {
       {/* Floating 3D Geometric Shape 2: Octahedron / Diamond Wireframe (Left Center) */}
       <motion.div
         animate={{
-          y: [15, -18, 15],
+          y: [12, -15, 12],
           rotate: [360, 180, 0],
-          rotateY: [-20, 20, -20],
+          rotateY: [-15, 15, -15],
         }}
         transition={{
-          duration: 26,
+          duration: 28,
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className="absolute top-1/2 left-[4%] w-28 h-28 opacity-20 hidden lg:block"
+        className="absolute top-1/2 left-[4%] w-24 h-24 opacity-20 hidden lg:block transform-gpu"
+        style={{ willChange: 'transform' }}
       >
         <svg viewBox="0 0 100 100" className="w-full h-full stroke-cyan-400 fill-none" strokeWidth="1.2">
           <polygon points="50,10 90,50 50,90 10,50" />
@@ -90,19 +91,20 @@ export const ProjectBackground3D: React.FC = () => {
         </svg>
       </motion.div>
 
-      {/* Floating 3D Geometric Shape 3: Dual Orbital Rings / Torus Wireframe (Bottom Center) */}
+      {/* Floating 3D Geometric Shape 3: Dual Orbital Rings (Bottom Center) */}
       <motion.div
         animate={{
-          y: [-10, 14, -10],
+          y: [-8, 12, -8],
           rotateZ: [0, 360],
           rotateX: [55, 65, 55],
         }}
         transition={{
-          duration: 30,
+          duration: 32,
           repeat: Infinity,
           ease: 'linear',
         }}
-        className="absolute bottom-16 left-[22%] w-36 h-36 opacity-20 hidden sm:block"
+        className="absolute bottom-16 left-[22%] w-32 h-32 opacity-20 hidden sm:block transform-gpu"
+        style={{ willChange: 'transform' }}
       >
         <svg viewBox="0 0 120 120" className="w-full h-full stroke-purple-400 fill-none" strokeWidth="1">
           <ellipse cx="60" cy="60" rx="50" ry="24" stroke="rgba(192, 132, 252, 0.5)" />
@@ -113,48 +115,24 @@ export const ProjectBackground3D: React.FC = () => {
         </svg>
       </motion.div>
 
-      {/* Floating 3D Geometric Shape 4: Isometric Cube (Bottom Right) */}
-      <motion.div
-        animate={{
-          y: [12, -14, 12],
-          rotate: [-10, 15, -10],
-        }}
-        transition={{
-          duration: 18,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-        className="absolute bottom-28 right-[6%] w-24 h-24 opacity-20 hidden md:block"
-      >
-        <svg viewBox="0 0 100 100" className="w-full h-full stroke-indigo-300 fill-none" strokeWidth="1.2">
-          {/* Top Face */}
-          <polygon points="50,15 85,35 50,55 15,35" stroke="rgba(165, 180, 252, 0.7)" />
-          {/* Left Face */}
-          <polygon points="15,35 50,55 50,95 15,75" stroke="rgba(129, 140, 248, 0.5)" />
-          {/* Right Face */}
-          <polygon points="50,55 85,35 85,75 50,95" stroke="rgba(99, 102, 241, 0.6)" />
-          <circle cx="50" cy="55" r="2" fill="#a5b4fc" />
-        </svg>
-      </motion.div>
-
       {/* Drifting Light Particle Dust */}
       {particles.map((p) => (
         <motion.div
           key={p.id}
-          className="absolute rounded-full pointer-events-none"
+          className="absolute rounded-full pointer-events-none transform-gpu"
           style={{
             left: `${p.x}%`,
             top: `${p.y}%`,
             width: `${p.size}px`,
             height: `${p.size}px`,
             backgroundColor: p.color,
-            boxShadow: `0 0 ${p.size * 3}px ${p.color}`,
+            boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+            willChange: 'transform, opacity',
           }}
           animate={{
-            y: [-15, 15, -15],
-            x: [-8, 8, -8],
-            opacity: [0.2, 0.7, 0.2],
-            scale: [0.9, 1.3, 0.9],
+            y: [-12, 12, -12],
+            x: [-6, 6, -6],
+            opacity: [0.2, 0.65, 0.2],
           }}
           transition={{
             duration: p.duration,
@@ -167,3 +145,4 @@ export const ProjectBackground3D: React.FC = () => {
     </div>
   )
 }
+export default ProjectBackground3D
