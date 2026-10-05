@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/layout/Footer'
-import { Hero } from './components/sections/Hero'
+import { Home } from './components/sections/Home'
 import { About } from './components/sections/About'
 import { Projects } from './components/sections/Projects'
 import { Skills } from './components/sections/Skills'
@@ -38,8 +38,8 @@ export const App: React.FC = () => {
       <Navbar />
 
       <main className="grow">
-        {/* Hero has its own entrance animations */}
-        <Hero />
+        {/* Home hero section */}
+        <Home />
 
         <SectionReveal>
           <About />

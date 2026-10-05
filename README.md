@@ -70,7 +70,7 @@ Portfolio/
 │   │   │   ├── Navbar.tsx      # Fixed glassmorphic navigation bar
 │   │   │   └── Footer.tsx      # Social links & back-to-top button
 │   │   ├── sections/           # Major portfolio sections
-│   │   │   ├── Hero.tsx        # Hero entrance & call-to-actions
+│   │   │   ├── Home.tsx        # Home hero entrance & call-to-actions
 │   │   │   ├── About.tsx       # Bio, pillars & profile tilt card
 │   │   │   ├── Projects.tsx    # Showcase gallery with filters
 │   │   │   ├── Skills.tsx      # Categorized skill bars & 3D orbit

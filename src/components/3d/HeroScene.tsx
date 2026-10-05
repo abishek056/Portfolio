@@ -1,180 +1,271 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Float, Sparkles, MeshDistortMaterial } from '@react-three/drei'
+import { Float } from '@react-three/drei'
 import * as THREE from 'three'
 
-interface InteractiveShapeProps {
-  position: [number, number, number]
-  geometry: 'octahedron' | 'dodecahedron' | 'torusKnot' | 'box' | 'icosahedron'
-  color: string
-  emissive: string
-  scale?: number
-  speed?: number
-  rotationIntensity?: number
-  floatIntensity?: number
+interface ParticleData {
+  x: number
+  y: number
+  z: number
+  vx: number
+  vy: number
+  vz: number
 }
 
-const InteractiveShape: React.FC<InteractiveShapeProps> = ({
-  position,
-  geometry,
-  color,
-  emissive,
-  scale = 1,
-  speed = 2,
-  rotationIntensity = 1.5,
-  floatIntensity = 1.5,
-}) => {
-  const meshRef = useRef<THREE.Mesh>(null)
-  const [hovered, setHovered] = useState(false)
+// Deterministic pseudo-random number generator for pure initialization
+function pseudoRandom(seed: number) {
+  const x = Math.sin(seed) * 10000
+  return x - Math.floor(x)
+}
 
-  useFrame((_, delta) => {
-    if (!meshRef.current) return
-    meshRef.current.rotation.x += delta * 0.4
-    meshRef.current.rotation.y += delta * 0.5
-    // Smooth scale on hover
-    const targetScale = hovered ? scale * 1.25 : scale
-    meshRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), delta * 8)
+function createConstellationData(count: number) {
+  const pData: ParticleData[] = []
+  const pPositions = new Float32Array(count * 3)
+
+  for (let i = 0; i < count; i++) {
+    const rx = (pseudoRandom(i * 3 + 1) - 0.5) * 14
+    const ry = (pseudoRandom(i * 3 + 2) - 0.5) * 9
+    const rz = (pseudoRandom(i * 3 + 3) - 0.5) * 6
+
+    pPositions[i * 3] = rx
+    pPositions[i * 3 + 1] = ry
+    pPositions[i * 3 + 2] = rz
+
+    const vx = (pseudoRandom(i * 3 + 100) - 0.5) * 0.007
+    const vy = (pseudoRandom(i * 3 + 200) - 0.5) * 0.007
+    const vz = (pseudoRandom(i * 3 + 300) - 0.5) * 0.005
+
+    pData.push({
+      x: rx,
+      y: ry,
+      z: rz,
+      vx,
+      vy,
+      vz,
+    })
+  }
+
+  const maxLines = Math.floor((count * (count - 1)) / 2)
+  const lPositions = new Float32Array(maxLines * 6)
+  const lColors = new Float32Array(maxLines * 6)
+
+  return {
+    particles: pData,
+    initialPositions: pPositions,
+    linePositions: lPositions,
+    lineColors: lColors,
+  }
+}
+
+// Module-level cached texture
+let cachedPointTexture: THREE.Texture | null = null
+function getPointTexture(): THREE.Texture | null {
+  if (cachedPointTexture) return cachedPointTexture
+  if (typeof document === 'undefined') return null
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 64
+  canvas.height = 64
+  const ctx = canvas.getContext('2d')
+  if (ctx) {
+    const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32)
+    grad.addColorStop(0, 'rgba(255, 255, 255, 1)')
+    grad.addColorStop(0.2, 'rgba(165, 180, 252, 0.9)')
+    grad.addColorStop(0.5, 'rgba(99, 102, 241, 0.4)')
+    grad.addColorStop(1, 'rgba(0, 0, 0, 0)')
+    ctx.fillStyle = grad
+    ctx.fillRect(0, 0, 64, 64)
+  }
+  cachedPointTexture = new THREE.CanvasTexture(canvas)
+  return cachedPointTexture
+}
+
+const ConstellationNetwork: React.FC<{ count: number; maxDistance: number }> = ({
+  count,
+  maxDistance,
+}) => {
+  const pointsRef = useRef<THREE.Points>(null)
+  const linesRef = useRef<THREE.LineSegments>(null)
+
+  // React-idiomatic single-time initialization
+  const [constellation] = useState(() => createConstellationData(count))
+  const particlesRef = useRef<ParticleData[] | null>(null)
+  if (particlesRef.current == null) {
+    particlesRef.current = constellation.particles
+  }
+
+  const texture = getPointTexture()
+
+  useFrame(() => {
+    if (!pointsRef.current || !linesRef.current || !particlesRef.current) return
+
+    const particles = particlesRef.current
+    const posAttr = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute
+    const posArr = posAttr.array as Float32Array
+
+    // 1. Update particle positions
+    for (let i = 0; i < count; i++) {
+      const p = particles[i]
+      p.x += p.vx
+      p.y += p.vy
+      p.z += p.vz
+
+      if (p.x < -8.5 || p.x > 8.5) p.vx *= -1
+      if (p.y < -5.5 || p.y > 5.5) p.vy *= -1
+      if (p.z < -4.0 || p.z > 3.0) p.vz *= -1
+
+      posArr[i * 3] = p.x
+      posArr[i * 3 + 1] = p.y
+      posArr[i * 3 + 2] = p.z
+    }
+    posAttr.needsUpdate = true
+
+    // 2. Compute dynamic spider-web connection lines directly into geometry buffers
+    const lineGeo = linesRef.current.geometry
+    const linePosAttr = lineGeo.attributes.position as THREE.BufferAttribute
+    const lineColAttr = lineGeo.attributes.color as THREE.BufferAttribute
+    const lPosArr = linePosAttr.array as Float32Array
+    const lColArr = lineColAttr.array as Float32Array
+
+    let lineIdx = 0
+    let colorIdx = 0
+    const colorA = new THREE.Color('#818cf8') // Indigo
+    const colorB = new THREE.Color('#c084fc') // Purple
+    const mixed = new THREE.Color()
+
+    for (let i = 0; i < count; i++) {
+      const p1 = particles[i]
+      for (let j = i + 1; j < count; j++) {
+        const p2 = particles[j]
+        const dx = p1.x - p2.x
+        const dy = p1.y - p2.y
+        const dz = p1.z - p2.z
+        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
+
+        if (dist < maxDistance) {
+          lPosArr[lineIdx++] = p1.x
+          lPosArr[lineIdx++] = p1.y
+          lPosArr[lineIdx++] = p1.z
+
+          lPosArr[lineIdx++] = p2.x
+          lPosArr[lineIdx++] = p2.y
+          lPosArr[lineIdx++] = p2.z
+
+          const alpha = 1 - dist / maxDistance
+          mixed.lerpColors(colorA, colorB, (p1.x + 8) / 16)
+
+          const r = mixed.r * alpha * 0.7
+          const g = mixed.g * alpha * 0.7
+          const b = mixed.b * alpha * 0.7
+
+          lColArr[colorIdx++] = r
+          lColArr[colorIdx++] = g
+          lColArr[colorIdx++] = b
+
+          lColArr[colorIdx++] = r
+          lColArr[colorIdx++] = g
+          lColArr[colorIdx++] = b
+        }
+      }
+    }
+
+    linePosAttr.needsUpdate = true
+    lineColAttr.needsUpdate = true
+    lineGeo.setDrawRange(0, lineIdx / 3)
   })
 
   return (
-    <Float
-      speed={speed}
-      rotationIntensity={rotationIntensity}
-      floatIntensity={floatIntensity}
-      position={position}
-    >
-      <mesh
-        ref={meshRef}
-        scale={scale}
-        onPointerOver={(e) => {
-          e.stopPropagation()
-          setHovered(true)
-        }}
-        onPointerOut={() => setHovered(false)}
-      >
-        {geometry === 'octahedron' && <octahedronGeometry args={[0.9, 0]} />}
-        {geometry === 'dodecahedron' && <dodecahedronGeometry args={[0.8, 0]} />}
-        {geometry === 'torusKnot' && <torusKnotGeometry args={[0.6, 0.2, 64, 12]} />}
-        {geometry === 'box' && <boxGeometry args={[0.9, 0.9, 0.9]} />}
-        {geometry === 'icosahedron' && <icosahedronGeometry args={[0.85, 0]} />}
+    <group>
+      {/* Constellation Nodes */}
+      <points ref={pointsRef}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            args={[constellation.initialPositions, 3]}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          size={0.16}
+          map={texture || undefined}
+          transparent
+          alphaTest={0.01}
+          opacity={0.85}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </points>
 
+      {/* Spider-web Connecting Lines */}
+      <lineSegments ref={linesRef}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            args={[constellation.linePositions, 3]}
+          />
+          <bufferAttribute
+            attach="attributes-color"
+            args={[constellation.lineColors, 3]}
+          />
+        </bufferGeometry>
+        <lineBasicMaterial
+          vertexColors
+          transparent
+          opacity={0.65}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </lineSegments>
+    </group>
+  )
+}
+
+/** Delicate floating crystal accents with slow, calm motion */
+const FloatingCrystal: React.FC<{
+  position: [number, number, number]
+  geometry: 'octahedron' | 'icosahedron' | 'tetrahedron'
+  color: string
+  size: number
+  speed: number
+}> = ({ position, geometry, color, size, speed }) => {
+  const meshRef = useRef<THREE.Mesh>(null)
+
+  useFrame((_, delta) => {
+    if (!meshRef.current) return
+    meshRef.current.rotation.x += delta * 0.15 * speed
+    meshRef.current.rotation.y += delta * 0.2 * speed
+  })
+
+  return (
+    <Float speed={speed * 1.5} rotationIntensity={0.6} floatIntensity={0.8} position={position}>
+      <mesh ref={meshRef}>
+        {geometry === 'octahedron' && <octahedronGeometry args={[size, 0]} />}
+        {geometry === 'icosahedron' && <icosahedronGeometry args={[size, 0]} />}
+        {geometry === 'tetrahedron' && <tetrahedronGeometry args={[size, 0]} />}
         <meshStandardMaterial
-          color={hovered ? '#ffffff' : color}
-          emissive={emissive}
-          emissiveIntensity={hovered ? 1.2 : 0.4}
+          color={color}
+          emissive={color}
+          emissiveIntensity={0.4}
           roughness={0.2}
-          metalness={0.85}
+          metalness={0.9}
+          wireframe
+          transparent
+          opacity={0.35}
         />
       </mesh>
     </Float>
   )
 }
 
-const CentralCore: React.FC<{ isMobile?: boolean }> = ({ isMobile }) => {
-  const coreRef = useRef<THREE.Mesh>(null)
-  const wireframeRef = useRef<THREE.Mesh>(null)
-  const ring1Ref = useRef<THREE.Mesh>(null)
-  const ring2Ref = useRef<THREE.Mesh>(null)
-  const [hovered, setHovered] = useState(false)
-
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime()
-    if (coreRef.current) {
-      coreRef.current.rotation.y = t * 0.25
-      coreRef.current.rotation.x = Math.sin(t * 0.2) * 0.2
-    }
-    if (wireframeRef.current) {
-      wireframeRef.current.rotation.y = -t * 0.35
-      wireframeRef.current.rotation.z = t * 0.15
-    }
-    if (ring1Ref.current) {
-      ring1Ref.current.rotation.x = t * 0.4
-      ring1Ref.current.rotation.y = t * 0.3
-    }
-    if (ring2Ref.current) {
-      ring2Ref.current.rotation.x = -t * 0.3
-      ring2Ref.current.rotation.z = t * 0.4
-    }
-  })
-
-  const baseScale = isMobile ? 1.1 : 1.35
-  const hoverScale = isMobile ? 1.2 : 1.45
-
-  return (
-    <group
-      onPointerOver={(e) => {
-        e.stopPropagation()
-        setHovered(true)
-      }}
-      onPointerOut={() => setHovered(false)}
-    >
-      {/* Dynamic distorting inner core - optimized geometry detail 3 */}
-      <Float speed={2.5} rotationIntensity={1} floatIntensity={1.2}>
-        <mesh ref={coreRef} scale={hovered ? hoverScale : baseScale}>
-          <icosahedronGeometry args={[1, 3]} />
-          <MeshDistortMaterial
-            color={hovered ? '#a855f7' : '#6366f1'}
-            emissive="#312e81"
-            emissiveIntensity={0.6}
-            roughness={0.15}
-            metalness={0.9}
-            distort={0.4}
-            speed={2.2}
-          />
-        </mesh>
-
-        {/* Outer futuristic geodesic wireframe lattice */}
-        <mesh ref={wireframeRef} scale={isMobile ? 1.45 : 1.75}>
-          <icosahedronGeometry args={[1, 1]} />
-          <meshStandardMaterial
-            color="#38bdf8"
-            emissive="#0284c7"
-            emissiveIntensity={0.8}
-            wireframe
-            transparent
-            opacity={hovered ? 0.65 : 0.35}
-          />
-        </mesh>
-
-        {/* Orbiting tilted ring 1 */}
-        <mesh ref={ring1Ref}>
-          <torusGeometry args={[isMobile ? 1.7 : 2.0, 0.02, 12, 64]} />
-          <meshStandardMaterial
-            color="#818cf8"
-            emissive="#6366f1"
-            emissiveIntensity={1}
-            roughness={0.3}
-            metalness={0.8}
-          />
-        </mesh>
-
-        {/* Orbiting tilted ring 2 */}
-        <mesh ref={ring2Ref} rotation={[Math.PI / 3, 0, Math.PI / 4]}>
-          <torusGeometry args={[isMobile ? 1.9 : 2.3, 0.016, 12, 64]} />
-          <meshStandardMaterial
-            color="#c084fc"
-            emissive="#a855f7"
-            emissiveIntensity={0.9}
-            roughness={0.3}
-            metalness={0.8}
-          />
-        </mesh>
-      </Float>
-    </group>
-  )
-}
-
-const InteractiveRig: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+/** Gentle parallax responding to pointer movement */
+const CameraParallax: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const groupRef = useRef<THREE.Group>(null)
 
   useFrame((state, delta) => {
     if (!groupRef.current) return
-    // Smooth lerp following cursor pointer (-1 to 1)
-    const targetX = (state.pointer.x * Math.PI) / 9
-    const targetY = (-state.pointer.y * Math.PI) / 9
-
-    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetX, delta * 3)
-    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetY, delta * 3)
+    const targetX = (state.pointer.x * Math.PI) / 24
+    const targetY = (-state.pointer.y * Math.PI) / 24
+    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetX, delta * 2)
+    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetY, delta * 2)
   })
 
   return <group ref={groupRef}>{children}</group>
@@ -185,7 +276,6 @@ export const HeroScene: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
 
-  // Track viewport visibility to pause frameloop when scrolled offscreen
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
@@ -211,122 +301,64 @@ export const HeroScene: React.FC = () => {
     }
   }, [])
 
-  return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-full min-h-[360px] sm:min-h-[460px] lg:min-h-[580px] flex items-center justify-center"
-    >
-      {/* Background glow layers */}
-      <div className="absolute inset-0 bg-radial from-indigo-500/15 via-purple-500/5 to-transparent blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 sm:w-96 sm:h-96 rounded-full bg-cyan-500/10 blur-[100px] pointer-events-none" />
+  const count = isMobile ? 48 : 88
+  const maxDistance = isMobile ? 2.1 : 2.5
 
+  return (
+    <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none select-none z-0">
       <Canvas
-        camera={{ position: [0, 0, isMobile ? 6.8 : 6.2], fov: isMobile ? 48 : 45 }}
+        camera={{ position: [0, 0, 7.5], fov: 45 }}
         dpr={[1, 1.5]}
         frameloop={isVisible ? 'always' : 'never'}
-        performance={{ min: 0.5 }}
         gl={{
           antialias: true,
           alpha: true,
           powerPreference: 'high-performance',
           stencil: false,
-          depth: true,
+          depth: false,
         }}
-        className="w-full h-full cursor-grab active:cursor-grabbing"
+        className="w-full h-full"
       >
-        {/* Optimized Lighting Setup */}
-        <ambientLight intensity={0.7} color="#e0e7ff" />
-        <directionalLight position={[8, 8, 4]} intensity={1.6} color="#bae6fd" />
-        <directionalLight position={[-8, -8, -4]} intensity={0.9} color="#c084fc" />
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[5, 5, 5]} intensity={1.0} color="#a5b4fc" />
 
-        {/* Accent Point Lights */}
-        <pointLight position={[3.5, 2.5, 2]} intensity={3.0} color="#06b6d4" distance={12} />
-        <pointLight position={[-3.5, -2.5, 2]} intensity={3.5} color="#a855f7" distance={12} />
+        <CameraParallax>
+          {/* Spider-Web Constellation Network */}
+          <ConstellationNetwork count={count} maxDistance={maxDistance} />
 
-        <InteractiveRig>
-          {/* Central Complex */}
-          <CentralCore isMobile={isMobile} />
-
-          {/* Floating Geometric Satellites */}
-          <InteractiveShape
-            position={[isMobile ? 1.8 : 2.4, 1.3, -0.6]}
+          {/* Delicate slow ambient wireframe crystals */}
+          <FloatingCrystal
+            position={[-5.0, 2.2, -1.5]}
+            geometry="icosahedron"
+            color="#818cf8"
+            size={0.7}
+            speed={0.8}
+          />
+          <FloatingCrystal
+            position={[5.2, -1.8, -1.0]}
             geometry="octahedron"
-            color="#38bdf8"
-            emissive="#0284c7"
-            scale={isMobile ? 0.45 : 0.55}
-            speed={2.2}
-            rotationIntensity={1.8}
-          />
-
-          <InteractiveShape
-            position={[isMobile ? -1.8 : -2.4, -1.1, 0.4]}
-            geometry="dodecahedron"
             color="#c084fc"
-            emissive="#9333ea"
-            scale={isMobile ? 0.4 : 0.48}
-            speed={1.9}
-            rotationIntensity={1.6}
+            size={0.65}
+            speed={0.9}
           />
-
-          <InteractiveShape
-            position={[isMobile ? 1.6 : 2.1, -1.3, -0.4]}
-            geometry="torusKnot"
-            color="#818cf8"
-            emissive="#4f46e5"
-            scale={isMobile ? 0.26 : 0.32}
-            speed={2.4}
-            rotationIntensity={1.4}
-          />
-
-          {!isMobile && (
-            <>
-              <InteractiveShape
-                position={[-2.0, 1.6, -0.8]}
-                geometry="box"
-                color="#2dd4bf"
-                emissive="#0d9488"
-                scale={0.42}
-                speed={1.7}
-                rotationIntensity={1.3}
-              />
-
-              <InteractiveShape
-                position={[0.3, 2.3, -1.2]}
-                geometry="icosahedron"
-                color="#f472b6"
-                emissive="#db2777"
-                scale={0.38}
-                speed={2.6}
-                rotationIntensity={2.0}
-              />
-            </>
-          )}
-
-          {/* Optimized Cosmic particles & starfield */}
-          <Sparkles
-            count={isMobile ? 25 : 45}
-            scale={isMobile ? 6 : 8.5}
-            size={2.2}
-            speed={0.3}
-            color="#818cf8"
-            opacity={0.7}
-          />
-          <Sparkles
-            count={isMobile ? 18 : 30}
-            scale={isMobile ? 5 : 6.5}
-            size={1.8}
-            speed={0.4}
+          <FloatingCrystal
+            position={[4.5, 2.5, -2.0]}
+            geometry="tetrahedron"
             color="#38bdf8"
-            opacity={0.6}
+            size={0.55}
+            speed={0.7}
           />
-        </InteractiveRig>
+          {!isMobile && (
+            <FloatingCrystal
+              position={[-4.2, -2.6, -1.2]}
+              geometry="octahedron"
+              color="#a855f7"
+              size={0.5}
+              speed={1.0}
+            />
+          )}
+        </CameraParallax>
       </Canvas>
-
-      {/* Floating HUD badge */}
-      <div className="absolute bottom-3 right-4 px-3 py-1 rounded-full bg-neutral-900/80 border border-neutral-700/60 backdrop-blur-md text-[11px] font-mono text-neutral-300 flex items-center gap-2 pointer-events-none select-none">
-        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-        Interactive 3D Space
-      </div>
     </div>
   )
 }
