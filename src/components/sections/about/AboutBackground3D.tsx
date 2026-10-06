@@ -1,150 +1,227 @@
-import React, { useMemo } from 'react'
-import { motion } from 'framer-motion'
+import React, { useRef, useState, useEffect, useMemo } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { Float } from '@react-three/drei'
+import * as THREE from 'three'
 
-interface Particle {
-  id: number
-  x: number
-  y: number
-  size: number
-  duration: number
-  delay: number
+/** Gentle Wireframe Polyhedron with subtle rotation and floating */
+const FloatingWireframeShape: React.FC<{
+  position: [number, number, number]
+  geometry: 'octahedron' | 'icosahedron' | 'dodecahedron' | 'torus'
   color: string
+  size: number
+  speed?: number
+  wireframeLinewidth?: number
+}> = ({ position, geometry, color, size, speed = 1 }) => {
+  const meshRef = useRef<THREE.Mesh>(null)
+
+  useFrame((_, delta) => {
+    if (!meshRef.current) return
+    meshRef.current.rotation.x += delta * 0.12 * speed
+    meshRef.current.rotation.y += delta * 0.16 * speed
+    meshRef.current.rotation.z += delta * 0.08 * speed
+  })
+
+  return (
+    <Float
+      speed={speed * 1.6}
+      rotationIntensity={0.8}
+      floatIntensity={1.0}
+      position={position}
+    >
+      <mesh ref={meshRef}>
+        {geometry === 'octahedron' && <octahedronGeometry args={[size, 0]} />}
+        {geometry === 'icosahedron' && <icosahedronGeometry args={[size, 0]} />}
+        {geometry === 'dodecahedron' && <dodecahedronGeometry args={[size, 0]} />}
+        {geometry === 'torus' && <torusGeometry args={[size, size * 0.35, 12, 24]} />}
+        <meshStandardMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={0.4}
+          roughness={0.2}
+          metalness={0.8}
+          wireframe
+          transparent
+          opacity={0.32}
+        />
+      </mesh>
+    </Float>
+  )
+}
+
+/** Soft floating particles (stardust) with drifting positions */
+const SoftFloatingParticles: React.FC<{ count: number }> = ({ count }) => {
+  const pointsRef = useRef<THREE.Points>(null)
+
+  const [positions, velocities] = useMemo(() => {
+    const pos = new Float32Array(count * 3)
+    const vel = new Float32Array(count * 3)
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 16
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 10
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 6
+
+      vel[i * 3] = (Math.random() - 0.5) * 0.004
+      vel[i * 3 + 1] = (Math.random() - 0.5) * 0.005
+      vel[i * 3 + 2] = (Math.random() - 0.5) * 0.003
+    }
+    return [pos, vel]
+  }, [count])
+
+  useFrame(() => {
+    if (!pointsRef.current) return
+    const posAttr = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute
+    const pos = posAttr.array as Float32Array
+
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] += velocities[i * 3]
+      pos[i * 3 + 1] += velocities[i * 3 + 1]
+      pos[i * 3 + 2] += velocities[i * 3 + 2]
+
+      if (pos[i * 3] < -8.5 || pos[i * 3] > 8.5) velocities[i * 3] *= -1
+      if (pos[i * 3 + 1] < -5.5 || pos[i * 3 + 1] > 5.5) velocities[i * 3 + 1] *= -1
+      if (pos[i * 3 + 2] < -3.5 || pos[i * 3 + 2] > 3.5) velocities[i * 3 + 2] *= -1
+    }
+    posAttr.needsUpdate = true
+  })
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.12}
+        color="#a5b4fc"
+        transparent
+        opacity={0.55}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </points>
+  )
+}
+
+/** Gentle parallax responding to pointer movement */
+const CameraParallax: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const groupRef = useRef<THREE.Group>(null)
+
+  useFrame((state, delta) => {
+    if (!groupRef.current) return
+    const targetX = (state.pointer.x * Math.PI) / 30
+    const targetY = (-state.pointer.y * Math.PI) / 30
+    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetX, delta * 2)
+    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetY, delta * 2)
+  })
+
+  return <group ref={groupRef}>{children}</group>
 }
 
 export const AboutBackground3D: React.FC = () => {
-  // Soft floating light particles around the about content
-  const particles: Particle[] = useMemo(() => {
-    const colors = [
-      'rgba(99, 102, 241, 0.45)', // Indigo
-      'rgba(56, 189, 248, 0.4)',  // Sky
-      'rgba(168, 85, 247, 0.4)',  // Purple
-      'rgba(52, 211, 153, 0.35)', // Emerald
-    ]
-    return Array.from({ length: 16 }).map((_, i) => ({
-      id: i,
-      x: (i * 19 + 5) % 94 + 3,
-      y: (i * 27 + 11) % 92 + 4,
-      size: (i % 3) * 1.5 + 2,
-      duration: 8 + (i % 5) * 2.5,
-      delay: (i % 4) * 1.5,
-      color: colors[i % colors.length],
-    }))
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting)
+      },
+      { threshold: 0.05, rootMargin: '120px' }
+    )
+
+    observer.observe(el)
+
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile, { passive: true })
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', checkMobile)
+    }
   }, [])
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
-      {/* Soft Ambient Radial Atmospheric Glows */}
-      <div className="absolute -top-24 -left-20 w-[450px] h-[450px] rounded-full bg-indigo-600/10 blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/2 -right-24 w-[480px] h-[480px] rounded-full bg-purple-600/10 blur-[130px] pointer-events-none" />
-      <div className="absolute -bottom-20 left-1/4 w-[400px] h-[400px] rounded-full bg-cyan-600/10 blur-[120px] pointer-events-none" />
+    <div
+      ref={containerRef}
+      className="absolute inset-0 w-full h-full pointer-events-none select-none z-0 overflow-hidden"
+    >
+      {/* Ambient Radial Atmospheric Glows */}
+      <div className="absolute top-1/4 -left-20 w-[460px] h-[460px] rounded-full bg-indigo-600/10 blur-[130px]" />
+      <div className="absolute top-1/3 -right-24 w-[480px] h-[480px] rounded-full bg-purple-600/10 blur-[140px]" />
+      <div className="absolute -bottom-24 left-1/3 w-[450px] h-[450px] rounded-full bg-cyan-600/5 blur-[120px]" />
 
-      {/* Subtle Matrix Dot Grid with Radial Mask */}
-      <div className="absolute inset-0 bg-[radial-gradient(#4f46e515_1px,transparent_1px)] [background-size:2rem_2rem] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_50%,#000_60%,transparent_100%)] opacity-60" />
+      {/* Subtle Tech Grid overlay aligned with Hero */}
+      <div className="absolute inset-0 bg-[radial-gradient(#4f46e512_1px,transparent_1px)] [background-size:2.2rem_2.2rem] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_50%,#000_60%,transparent_100%)] opacity-70" />
 
-      {/* Light 3D Floating Shape 1: Wireframe Dodecahedron / Multi-faceted Geosphere (Top Left) */}
-      <motion.div
-        animate={{
-          y: [-8, 10, -8],
-          rotate: [0, 180, 360],
-          rotateX: [10, 25, 10],
+      {/* 3D WebGL Canvas Layer */}
+      <Canvas
+        camera={{ position: [0, 0, 7.5], fov: 45 }}
+        dpr={[1, 1.5]}
+        frameloop={isVisible ? 'always' : 'never'}
+        gl={{
+          antialias: true,
+          alpha: true,
+          powerPreference: 'high-performance',
+          stencil: false,
+          depth: false,
         }}
-        transition={{
-          duration: 26,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-        className="absolute top-16 left-[5%] w-24 h-24 opacity-25 hidden md:block transform-gpu"
-        style={{ perspective: 800, willChange: 'transform' }}
+        className="w-full h-full"
       >
-        <svg viewBox="0 0 100 100" className="w-full h-full stroke-indigo-400 fill-none" strokeWidth="1.2">
-          <polygon points="50,5 90,27 90,73 50,95 10,73 10,27" />
-          <polygon points="50,22 80,38 80,62 50,78 20,62 20,38" stroke="rgba(129, 140, 248, 0.5)" strokeDasharray="3 3" />
-          <line x1="50" y1="5" x2="50" y2="22" stroke="rgba(99, 102, 241, 0.7)" />
-          <line x1="90" y1="27" x2="80" y2="38" stroke="rgba(99, 102, 241, 0.7)" />
-          <line x1="90" y1="73" x2="80" y2="62" stroke="rgba(99, 102, 241, 0.7)" />
-          <line x1="50" y1="95" x2="50" y2="78" stroke="rgba(99, 102, 241, 0.7)" />
-          <line x1="10" y1="73" x2="20" y2="62" stroke="rgba(99, 102, 241, 0.7)" />
-          <line x1="10" y1="27" x2="20" y2="38" stroke="rgba(99, 102, 241, 0.7)" />
-          <circle cx="50" cy="50" r="3" fill="#818cf8" />
-        </svg>
-      </motion.div>
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[5, 5, 5]} intensity={0.9} color="#a5b4fc" />
 
-      {/* Light 3D Floating Shape 2: Double Gyroscope Rings (Top Right) */}
-      <motion.div
-        animate={{
-          y: [10, -12, 10],
-          rotateZ: [0, 360],
-          rotateX: [60, 40, 60],
-        }}
-        transition={{
-          duration: 30,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-        className="absolute top-24 right-[6%] w-28 h-28 opacity-20 hidden lg:block transform-gpu"
-        style={{ willChange: 'transform' }}
-      >
-        <svg viewBox="0 0 100 100" className="w-full h-full stroke-cyan-400 fill-none" strokeWidth="1">
-          <ellipse cx="50" cy="50" rx="42" ry="20" stroke="rgba(56, 189, 248, 0.6)" />
-          <ellipse cx="50" cy="50" rx="30" ry="42" stroke="rgba(168, 85, 247, 0.5)" strokeDasharray="4 3" />
-          <circle cx="85" cy="50" r="2.5" fill="#38bdf8" />
-          <circle cx="50" cy="8" r="2.5" fill="#c084fc" />
-        </svg>
-      </motion.div>
+        <CameraParallax>
+          {/* Soft floating particle dust */}
+          <SoftFloatingParticles count={isMobile ? 28 : 55} />
 
-      {/* Light 3D Floating Shape 3: Octahedron Diamond Crystal (Bottom Left) */}
-      <motion.div
-        animate={{
-          y: [-6, 10, -6],
-          rotateY: [0, 180, 360],
-          rotateZ: [10, -10, 10],
-        }}
-        transition={{
-          duration: 22,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-        className="absolute bottom-20 left-[8%] w-20 h-20 opacity-20 hidden md:block transform-gpu"
-        style={{ willChange: 'transform' }}
-      >
-        <svg viewBox="0 0 100 100" className="w-full h-full stroke-purple-400 fill-none" strokeWidth="1.2">
-          <polygon points="50,10 88,50 50,90 12,50" />
-          <line x1="50" y1="10" x2="50" y2="90" stroke="rgba(192, 132, 252, 0.7)" />
-          <line x1="12" y1="50" x2="88" y2="50" stroke="rgba(192, 132, 252, 0.7)" />
-          <polygon points="50,26 72,50 50,74 28,50" stroke="rgba(168, 85, 247, 0.4)" strokeDasharray="2 2" />
-          <circle cx="50" cy="10" r="2" fill="#c084fc" />
-          <circle cx="50" cy="90" r="2" fill="#c084fc" />
-        </svg>
-      </motion.div>
+          {/* Light 3D Floating Geometric Shapes in perimeter */}
+          {/* Top-Left: Dodecahedron */}
+          <FloatingWireframeShape
+            position={[-5.4, 2.2, -1.2]}
+            geometry="dodecahedron"
+            color="#818cf8"
+            size={0.7}
+            speed={0.75}
+          />
 
-      {/* Drifting Soft Particles / Stardust */}
-      {particles.map((p) => (
-        <motion.div
-          key={p.id}
-          className="absolute rounded-full pointer-events-none transform-gpu"
-          style={{
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            width: `${p.size}px`,
-            height: `${p.size}px`,
-            backgroundColor: p.color,
-            boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-            willChange: 'transform, opacity',
-          }}
-          animate={{
-            y: [-10, 10, -10],
-            x: [-5, 5, -5],
-            opacity: [0.2, 0.6, 0.2],
-          }}
-          transition={{
-            duration: p.duration,
-            delay: p.delay,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-      ))}
+          {/* Top-Right: Icosahedron */}
+          <FloatingWireframeShape
+            position={[5.5, 2.4, -1.5]}
+            geometry="icosahedron"
+            color="#38bdf8"
+            size={0.65}
+            speed={0.85}
+          />
+
+          {/* Bottom-Right: Octahedron */}
+          <FloatingWireframeShape
+            position={[5.2, -2.2, -1.0]}
+            geometry="octahedron"
+            color="#c084fc"
+            size={0.6}
+            speed={0.9}
+          />
+
+          {/* Bottom-Left (Desktop only): Torus Ring */}
+          {!isMobile && (
+            <FloatingWireframeShape
+              position={[-5.0, -2.4, -1.4]}
+              geometry="torus"
+              color="#a855f7"
+              size={0.55}
+              speed={0.7}
+            />
+          )}
+        </CameraParallax>
+      </Canvas>
     </div>
   )
 }
+
 export default AboutBackground3D

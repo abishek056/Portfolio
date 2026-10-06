@@ -4,39 +4,39 @@ import {
   Sparkles,
   Server,
   Layers,
-  Activity,
-  ShieldCheck,
-  ArrowUpRight,
+  Zap,
+  Coffee,
+  ArrowRight,
+  MapPin,
   Code2,
   Terminal,
-  MapPin,
-  CheckCircle2,
+  HeartHandshake,
 } from 'lucide-react'
 import aboutImg from '../../assets/image/about/about.jpg'
 import { PERSONAL_INFO } from '../../data/portfolio'
 import { AboutBackground3D } from './about/AboutBackground3D'
 
 export const About: React.FC = () => {
-  // 3D Card tilt motion hooks for profile portrait
-  const portraitRef = useRef<HTMLDivElement>(null)
+  // 3D Card tilt motion hooks for the profile card
+  const cardRef = useRef<HTMLDivElement>(null)
   const [isHovered, setIsHovered] = useState(false)
 
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
 
-  const springConfig = { damping: 20, stiffness: 220, mass: 0.5 }
+  const springConfig = { damping: 22, stiffness: 200, mass: 0.5 }
   const smoothX = useSpring(mouseX, springConfig)
   const smoothY = useSpring(mouseY, springConfig)
 
-  const rotateX = useTransform(smoothY, [-0.5, 0.5], [10, -10])
-  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-12, 12])
+  const rotateX = useTransform(smoothY, [-0.5, 0.5], [8, -8])
+  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-8, 8])
   const glareX = useTransform(smoothX, [-0.5, 0.5], [20, 80])
   const glareY = useTransform(smoothY, [-0.5, 0.5], [20, 80])
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return
-    if (!portraitRef.current) return
-    const rect = portraitRef.current.getBoundingClientRect()
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
     const x = (e.clientX - rect.left) / rect.width - 0.5
     const y = (e.clientY - rect.top) / rect.height - 0.5
     mouseX.set(x)
@@ -49,132 +49,100 @@ export const About: React.FC = () => {
     mouseY.set(0)
   }
 
-  const pillars = [
+  // Key strengths / What I do - concise, high-impact capabilities
+  const keyStrengths = [
     {
       title: 'Full-Stack Architecture',
-      description:
-        'Resilient backend services, relational schema design, and secure authentication in Laravel 13 and Django 6.',
+      description: 'Resilient REST APIs, database schemas, and secure authentication in Laravel 13 & Django 6.',
       icon: Server,
-      color: 'from-indigo-500/20 to-purple-500/20',
-      border: 'border-indigo-500/30',
-      iconColor: 'text-indigo-400',
+      accent: 'indigo',
+      badge: 'Laravel & Django',
+      borderGlow: 'hover:border-indigo-500/50 hover:shadow-[0_0_24px_rgba(99,102,241,0.18)]',
+      iconBox: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30',
     },
     {
       title: 'Modern UI & 3D Web UX',
-      description:
-        'Fluid interfaces built with React 19, TypeScript, Tailwind CSS, Framer Motion, and Three.js visual elements.',
+      description: 'Fluid, responsive digital interfaces crafted with React 19, TypeScript, Tailwind CSS & Three.js.',
       icon: Layers,
-      color: 'from-cyan-500/20 to-blue-500/20',
-      border: 'border-cyan-500/30',
-      iconColor: 'text-cyan-400',
+      accent: 'cyan',
+      badge: 'React 19 & Three.js',
+      borderGlow: 'hover:border-cyan-500/50 hover:shadow-[0_0_24px_rgba(56,189,248,0.18)]',
+      iconBox: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
     },
     {
-      title: 'Real-Time & Event Pipelines',
-      description:
-        'Bidirectional WebSockets with Laravel Reverb, real-time status dispatching, and Mapbox GL geographic tracking.',
-      icon: Activity,
-      color: 'from-emerald-500/20 to-teal-500/20',
-      border: 'border-emerald-500/30',
-      iconColor: 'text-emerald-400',
-    },
-    {
-      title: 'Clean Code & Reliability',
-      description:
-        'Modular architecture, defensive validation, RESTful API standards, and database query optimizations.',
-      icon: ShieldCheck,
-      color: 'from-purple-500/20 to-pink-500/20',
-      border: 'border-purple-500/30',
-      iconColor: 'text-purple-400',
+      title: 'Real-Time Systems & Optimization',
+      description: 'Bidirectional WebSockets with Laravel Reverb, live status pipelines, and fast query execution.',
+      icon: Zap,
+      accent: 'purple',
+      badge: 'WebSockets & Pipelines',
+      borderGlow: 'hover:border-purple-500/50 hover:shadow-[0_0_24px_rgba(168,85,247,0.18)]',
+      iconBox: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
     },
   ]
 
-  const metrics = [
-    { label: 'Featured Projects', value: '5+' },
-    { label: 'Full-Stack Ecosystem', value: 'Laravel & Django' },
-    { label: 'Frontend Stack', value: 'React 19 & Vite' },
-    { label: 'Real-Time Sync', value: 'WebSockets' },
+  const personalInterests = [
+    { label: 'Specialty Coffee', icon: '☕' },
+    { label: 'UI Micro-Interactions', icon: '✨' },
+    { label: 'Tech Exploration', icon: '🚀' },
+    { label: 'Problem Solving', icon: '🧩' },
   ]
 
   return (
     <section
       id="about"
-      className="relative py-24 sm:py-32 border-t border-neutral-800/80 bg-[#08090f] overflow-hidden"
+      className="relative py-20 sm:py-28 border-t border-neutral-800/80 bg-[#07080e] overflow-hidden"
     >
-      {/* Light 3D Floating Geometric Shapes & Soft Particles */}
+      {/* Light 3D Floating Geometric Shapes & Soft Particle Dust */}
       <AboutBackground3D />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        {/* Section Header - Clean, Short & Focused */}
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-3">
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-500/30 bg-neutral-900/80 backdrop-blur-md shadow-[0_0_20px_rgba(99,102,241,0.12)]"
+            transition={{ duration: 0.4 }}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 bg-neutral-900/80 backdrop-blur-md shadow-[0_0_20px_rgba(99,102,241,0.12)]"
           >
             <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-            <span className="text-xs font-mono font-medium tracking-wider text-indigo-300 uppercase">
-              About Me // Profile & Philosophy
+            <span className="text-[11px] font-mono font-medium tracking-wider text-indigo-300 uppercase">
+              About // Snapshot
             </span>
           </motion.div>
 
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight"
           >
-            Passionate{' '}
+            Crafting scalable systems &{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-300 to-purple-400">
-              {PERSONAL_INFO.title}
-            </span>{' '}
-            & Systems Craftsman
+              modern digital experiences
+            </span>
           </motion.h2>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-base sm:text-lg text-neutral-300 max-w-2xl mx-auto leading-relaxed"
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="text-sm sm:text-base text-neutral-400 max-w-xl mx-auto font-normal"
           >
-            Bridging scalable, secure backend systems with fluid, interactive web experiences and modern digital craftsmanship.
+            A quick glimpse into who I am, what I build, and how I engineer reliable software.
           </motion.p>
         </div>
 
-        {/* Main Grid: 3D Portrait Column + Professional Intro Column */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
-          {/* Left Column: Interactive 3D Tilt Portrait Frame */}
-          <div className="lg:col-span-5 flex justify-center">
-            <div className="relative w-full max-w-sm" style={{ perspective: 1200 }}>
-              {/* Floating 3D Badge 1: Top-Left */}
+        {/* Modern Two-Column Card Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+          {/* ── LEFT COLUMN (5 Cols): 3D Persona Card + Personal Touch ── */}
+          <div className="lg:col-span-5 flex flex-col gap-5">
+            {/* 3D Tilt Identity Card */}
+            <div className="w-full" style={{ perspective: 1000 }}>
               <motion.div
-                animate={{ y: [-4, 6, -4] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute -top-4 -left-4 sm:-left-6 z-30 px-3 py-1.5 rounded-xl bg-neutral-900/90 border border-indigo-500/40 backdrop-blur-md shadow-xl flex items-center gap-2 text-xs font-medium text-indigo-200"
-              >
-                <Code2 className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Laravel & Django</span>
-              </motion.div>
-
-              {/* Floating 3D Badge 2: Bottom-Right */}
-              <motion.div
-                animate={{ y: [5, -5, 5] }}
-                transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                className="absolute -bottom-4 -right-3 sm:-right-5 z-30 px-3 py-1.5 rounded-xl bg-neutral-900/90 border border-cyan-500/40 backdrop-blur-md shadow-xl flex items-center gap-2 text-xs font-medium text-cyan-200"
-              >
-                <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                <span>React 19 & 3D Web</span>
-              </motion.div>
-
-              {/* Ambient Glow behind Portrait */}
-              <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-indigo-600/30 via-purple-600/20 to-cyan-500/20 opacity-40 blur-2xl pointer-events-none" />
-
-              {/* 3D Tilt Card Container */}
-              <motion.div
-                ref={portraitRef}
+                ref={cardRef}
                 onMouseMove={handleMouseMove}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={handleMouseLeave}
@@ -183,10 +151,16 @@ export const About: React.FC = () => {
                   rotateY,
                   transformStyle: 'preserve-3d',
                 }}
-                whileHover={{ scale: 1.02 }}
-                className="relative rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900/90 p-3 shadow-2xl transition-colors duration-300 group"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="relative rounded-2xl border border-neutral-800/90 bg-neutral-900/80 backdrop-blur-xl p-5 shadow-2xl transition-all duration-300 hover:border-indigo-500/40 group overflow-hidden"
               >
-                {/* Specular Glare Sheen Overlay */}
+                {/* Ambient Top Glow Line */}
+                <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent pointer-events-none" />
+
+                {/* Dynamic Specular Sheen on Hover */}
                 <motion.div
                   className="absolute inset-0 pointer-events-none z-30 transition-opacity duration-300 rounded-2xl"
                   style={{
@@ -194,130 +168,214 @@ export const About: React.FC = () => {
                     background: useTransform(
                       [glareX, glareY],
                       ([gx, gy]) =>
-                        `radial-gradient(circle 280px at ${gx}% ${gy}%, rgba(255,255,255,0.1), transparent 70%)`
+                        `radial-gradient(circle 260px at ${gx}% ${gy}%, rgba(255,255,255,0.08), transparent 70%)`
                     ),
                   }}
                 />
 
-                {/* Portrait Photo Container */}
-                <div className="relative rounded-xl overflow-hidden aspect-[4/5] bg-neutral-950 border border-neutral-800">
+                {/* Top Bar: Availability & Location Badges */}
+                <div className="flex items-center justify-between pb-4 border-b border-neutral-800/60">
+                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-[11px] font-mono font-medium text-emerald-300">
+                      Available for Opportunities
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 text-xs font-mono text-neutral-400">
+                    <MapPin className="w-3.5 h-3.5 text-indigo-400" />
+                    <span>{PERSONAL_INFO.location || 'Nepal'}</span>
+                  </div>
+                </div>
+
+                {/* Visual Portrait Frame */}
+                <div className="relative mt-4 rounded-xl overflow-hidden aspect-[4/3] bg-neutral-950 border border-neutral-800/80 group-hover:border-indigo-500/30 transition-colors">
                   <img
                     src={aboutImg}
                     alt={PERSONAL_INFO.name}
                     loading="lazy"
-                    className="w-full h-full object-cover object-top filter brightness-[0.97] contrast-[1.02] group-hover:scale-105 transition-transform duration-700 ease-out"
+                    className="w-full h-full object-cover object-top filter brightness-[0.96] group-hover:scale-105 transition-transform duration-700 ease-out"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-neutral-950/20 to-transparent" />
 
-                  {/* Gradient Vignette at Bottom of Photo */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/20 to-transparent opacity-80" />
+                  {/* Corner Accent Ornaments */}
+                  <div className="absolute top-2.5 left-2.5 w-2 h-2 border-t border-l border-indigo-400/60 pointer-events-none" />
+                  <div className="absolute bottom-2.5 right-2.5 w-2 h-2 border-b border-r border-indigo-400/60 pointer-events-none" />
+                </div>
 
-                  {/* Inside Portrait Footer Pill */}
-                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between p-2.5 rounded-lg bg-neutral-900/80 backdrop-blur-md border border-neutral-800/80 text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                      <span className="font-medium text-neutral-200">Available for Opportunities</span>
-                    </div>
-                    <span className="text-[11px] font-mono text-neutral-400 flex items-center gap-1">
-                      <MapPin className="w-3 h-3 text-indigo-400" />
-                      Nepal
-                    </span>
+                {/* Persona Footnote */}
+                <div className="pt-4 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-base font-bold text-white tracking-tight flex items-center gap-1.5">
+                      {PERSONAL_INFO.name}
+                    </h3>
+                    <p className="text-xs font-mono text-indigo-300/80">{PERSONAL_INFO.title}</p>
+                  </div>
+
+                  {/* Quick Tech Tag */}
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-800/80 border border-neutral-700/60 text-[11px] font-mono text-neutral-300">
+                    <Code2 className="w-3 h-3 text-indigo-400" />
+                    <span>Full-Stack</span>
                   </div>
                 </div>
               </motion.div>
             </div>
+
+            {/* Personal Touch Card ("Beyond The Code") */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              whileHover={{ y: -3 }}
+              className="p-5 rounded-2xl border border-neutral-800/80 bg-neutral-900/60 backdrop-blur-xl shadow-lg hover:border-purple-500/40 hover:bg-neutral-900/80 transition-all duration-300 group"
+            >
+              <div className="flex items-center gap-2.5 mb-2.5">
+                <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-400 group-hover:scale-110 transition-transform duration-300">
+                  <Coffee className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-white tracking-tight">Beyond The Code</h4>
+                  <span className="text-[10px] font-mono text-purple-400/80 uppercase tracking-wider block">
+                    Personal Touch
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-xs sm:text-sm text-neutral-300/90 leading-relaxed mb-3">
+                Outside of software architecture, I'm driven by continuous curiosity—exploring new tech stacks, refining UI micro-interactions, and brewing good coffee while planning the next build.
+              </p>
+
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {personalInterests.map((item) => (
+                  <span
+                    key={item.label}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-mono text-neutral-300 bg-neutral-800/70 border border-neutral-700/50 group-hover:border-neutral-600 transition-colors"
+                  >
+                    <span>{item.icon}</span>
+                    <span>{item.label}</span>
+                  </span>
+                ))}
+              </div>
+            </motion.div>
           </div>
 
-          {/* Right Column: Professional Narrative & Pillars */}
-          <div className="lg:col-span-7 space-y-6 text-left">
+          {/* ── RIGHT COLUMN (7 Cols): Short Intro + Key Strengths + CTAs ── */}
+          <div className="lg:col-span-7 flex flex-col gap-5">
+            {/* Professional Introduction Card (Concise 3-4 lines max) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="space-y-4"
+              transition={{ duration: 0.5, delay: 0.1 }}
+              whileHover={{ y: -2 }}
+              className="p-6 rounded-2xl border border-neutral-800/90 bg-neutral-900/70 backdrop-blur-xl shadow-xl hover:border-indigo-500/40 transition-all duration-300 group relative overflow-hidden"
             >
-              <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                Hi, I'm {PERSONAL_INFO.name} — bridging full-stack systems with smooth, interactive user experiences.
-              </h3>
+              {/* Subtle accent highlight */}
+              <div className="absolute top-0 left-0 w-24 h-[2px] bg-gradient-to-r from-indigo-500 to-sky-400" />
 
-              <p className="text-neutral-300 leading-relaxed text-sm sm:text-base">
-                I specialize in end-to-end software engineering, from architecting scalable REST APIs and relational database models in <span className="text-white font-medium">Laravel</span> and <span className="text-white font-medium">Django</span> to building responsive, fluid interfaces with <span className="text-white font-medium">React 19</span>, <span className="text-white font-medium">TypeScript</span>, and <span className="text-white font-medium">Tailwind CSS</span>.
+              <div className="flex items-center gap-2 mb-3 text-indigo-400 font-mono text-xs uppercase tracking-wider font-semibold">
+                <Terminal className="w-4 h-4" />
+                <span>Professional Overview</span>
+              </div>
+
+              {/* 3-4 Line Professional Introduction */}
+              <p className="text-sm sm:text-base text-neutral-200 leading-relaxed">
+                I'm a full-stack software engineer dedicated to architecting resilient backends and intuitive, high-performance web applications. Working seamlessly across <span className="text-white font-medium">Laravel 13</span>, <span className="text-white font-medium">Django 6</span>, and modern <span className="text-white font-medium">React 19</span> ecosystems, I turn complex business challenges into clean, maintainable, and scalable digital products.
               </p>
 
-              <p className="text-neutral-400 text-sm leading-relaxed">
-                Whether deploying mission-critical platforms like <span className="text-indigo-300 font-medium">HealthHub</span> (with real-time ambulance tracking, hospital discovery, and OPD queues) or developing dynamic e-commerce portals, I prioritize clean architectural separation, rock-solid security, and refined visual aesthetics.
-              </p>
+              {/* Quick Philosophy Pills */}
+              <div className="mt-4 pt-4 border-t border-neutral-800/70 flex flex-wrap items-center gap-2">
+                <span className="text-[11px] font-mono text-neutral-400">Core Principles:</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                  Clean Architecture
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                  Fluid UX
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                  Production Reliability
+                </span>
+              </div>
             </motion.div>
 
-            {/* Core Competency Pillars Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              {pillars.map((pillar, i) => {
-                const Icon = pillar.icon
-                return (
-                  <motion.div
-                    key={pillar.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: i * 0.1 }}
-                    whileHover={{ y: -4 }}
-                    className={`p-4 rounded-xl bg-neutral-900/70 border ${pillar.border} backdrop-blur-md hover:bg-neutral-900/90 transition-all duration-300 shadow-lg group`}
-                  >
-                    <div className="flex items-center gap-2.5 mb-2">
-                      <div className={`p-2 rounded-lg bg-neutral-800/80 border border-neutral-700/60 ${pillar.iconColor} group-hover:scale-110 transition-transform duration-300`}>
-                        <Icon className="w-4 h-4" />
+            {/* Key Strengths / What I Do Cards */}
+            <div className="space-y-3.5">
+              <div className="flex items-center justify-between px-1">
+                <span className="text-xs font-mono uppercase tracking-wider text-neutral-400 font-semibold flex items-center gap-1.5">
+                  <Code2 className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>Key Strengths & What I Do</span>
+                </span>
+                <span className="text-[11px] font-mono text-neutral-500">Core Capabilities</span>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3.5">
+                {keyStrengths.map((item, idx) => {
+                  const Icon = item.icon
+                  return (
+                    <motion.div
+                      key={item.title}
+                      initial={{ opacity: 0, y: 15 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.45, delay: 0.15 + idx * 0.08 }}
+                      whileHover={{ y: -3, scale: 1.008 }}
+                      className={`p-4 sm:p-4.5 rounded-xl border border-neutral-800/80 bg-neutral-900/60 backdrop-blur-md ${item.borderGlow} transition-all duration-300 group`}
+                    >
+                      <div className="flex items-start gap-3.5">
+                        <div
+                          className={`p-2.5 rounded-xl border ${item.iconBox} shrink-0 group-hover:scale-110 transition-transform duration-300`}
+                        >
+                          <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                        </div>
+
+                        <div className="space-y-1 flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <h4 className="text-sm sm:text-base font-semibold text-white tracking-tight group-hover:text-indigo-300 transition-colors">
+                              {item.title}
+                            </h4>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-neutral-800/80 border border-neutral-700/60 text-neutral-400 shrink-0 hidden sm:inline-block">
+                              {item.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed">
+                            {item.description}
+                          </p>
+                        </div>
                       </div>
-                      <h4 className="text-sm font-semibold text-white group-hover:text-indigo-300 transition-colors">
-                        {pillar.title}
-                      </h4>
-                    </div>
-                    <p className="text-xs text-neutral-400 leading-relaxed">
-                      {pillar.description}
-                    </p>
-                  </motion.div>
-                )
-              })}
+                    </motion.div>
+                  )
+                })}
+              </div>
             </div>
 
-            {/* Key Metrics / Highlights Bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="p-4 rounded-xl bg-neutral-900/50 border border-neutral-800/80 backdrop-blur-md grid grid-cols-2 sm:grid-cols-4 gap-4"
-            >
-              {metrics.map((m) => (
-                <div key={m.label} className="text-left space-y-0.5">
-                  <span className="text-xs text-neutral-400 font-mono block">{m.label}</span>
-                  <span className="text-sm sm:text-base font-bold text-white tracking-tight">{m.value}</span>
-                </div>
-              ))}
-            </motion.div>
-
-            {/* Action Buttons */}
+            {/* Bottom Actions - Aligned with Hero button aesthetics */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.35 }}
-              className="flex flex-wrap items-center gap-3 pt-2"
+              transition={{ duration: 0.4, delay: 0.3 }}
+              className="pt-2 flex flex-wrap items-center gap-3"
             >
-              <a
+              <motion.a
                 href="#projects"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all duration-300 hover:scale-[1.02]"
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_28px_rgba(99,102,241,0.5)] transition-all duration-300"
               >
-                <span>Explore Featured Projects</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </a>
+                <span>View Featured Projects</span>
+                <ArrowRight className="w-4 h-4" />
+              </motion.a>
 
-              <a
+              <motion.a
                 href="#contact"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-neutral-300 hover:text-white bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-800 hover:border-neutral-700 transition-all duration-200"
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-neutral-300 hover:text-white bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-800 hover:border-neutral-700 backdrop-blur-md transition-all duration-200"
               >
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                <span>Get in Touch</span>
-              </a>
+                <HeartHandshake className="w-4 h-4 text-indigo-400" />
+                <span>Get In Touch</span>
+              </motion.a>
             </motion.div>
           </div>
         </div>
