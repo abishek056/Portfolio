@@ -1,8 +1,9 @@
-import React, { Suspense, useState } from 'react'
+import React, { Suspense } from 'react'
 import { motion, type Variants } from 'framer-motion'
-import { ArrowRight, Send, Terminal, Sparkles, Check, Copy } from 'lucide-react'
+import { ArrowRight, Send, Terminal, Sparkles } from 'lucide-react'
 import { PERSONAL_INFO } from '../../data/portfolio'
 import { HeroScene } from '../3d/HeroScene'
+import { ProfileCard } from './home/ProfileCard'
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -37,80 +38,7 @@ const techBadges = [
   'Tailwind CSS',
 ]
 
-interface CodeSnippet {
-  filename: string
-  language: string
-  code: string[]
-}
-
-const SNIPPETS: CodeSnippet[] = [
-  {
-    filename: 'LiveTracking.tsx',
-    language: 'TypeScript / React 19',
-    code: [
-      '// Real-Time WebSocket Ambulance & Driver Stream',
-      'const useLiveTelemetry = (unitId: string) => {',
-      '  const [coords, setCoords] = useState<Coordinates>()',
-      '',
-      '  useEffect(() => {',
-      '    const channel = echo.private(`fleet.${unitId}`)',
-      '    channel.listen(".location.updated", (e: GeoEvent) => {',
-      '      setCoords({ lat: e.lat, lng: e.lng, speed: e.kph })',
-      '    })',
-      '    return () => { channel.stopListening() }',
-      '  }, [unitId])',
-      '',
-      '  return { coords, status: "connected" }',
-      '}',
-    ],
-  },
-  {
-    filename: 'DispatchService.php',
-    language: 'PHP 8.3 / Laravel 13',
-    code: [
-      '// Automated Nearest-Responder Allocation',
-      'class DispatchService {',
-      '  public function assignUnit(EmergencyTicket $ticket): Unit',
-      '  {',
-      '    $unit = Unit::query()',
-      '      ->where("status", UnitStatus::AVAILABLE)',
-      '      ->nearestTo($ticket->coordinates)',
-      '      ->firstOrFail();',
-      '',
-      '    broadcast(new UnitDispatchedEvent($ticket, $unit));',
-      '    return $unit;',
-      '  }',
-      '}',
-    ],
-  },
-  {
-    filename: 'api.config.ts',
-    language: 'TypeScript / Full-Stack',
-    code: [
-      '// High-Performance Edge & Micro-Architecture',
-      'export const DeveloperProfile = {',
-      '  name: "Abishek Adhikari",',
-      '  role: "Full-Stack Developer",',
-      '  focus: ["Resilient Backend", "Fluid UI", "3D UX"],',
-      '  status: "Available for Hire",',
-      '  stack: ["Laravel 13", "React 19", "Three.js", "Django"],',
-      '  mission: "Crafting impactful digital experiences",',
-      '} as const',
-    ],
-  },
-]
-
 export const Home: React.FC = () => {
-  const [activeTab, setActiveTab] = useState(0)
-  const [copied, setCopied] = useState(false)
-
-  const handleCopyCode = () => {
-    const text = SNIPPETS[activeTab].code.join('\n')
-    navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
   return (
     <section
       id="hero"
@@ -150,7 +78,7 @@ export const Home: React.FC = () => {
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
                 </span>
                 <span className="text-xs font-mono font-medium text-emerald-300">
-                  {PERSONAL_INFO.availableForHire ? 'Available for new opportunities' : 'Building cutting-edge tech'}
+                  {PERSONAL_INFO.availableForHire ? 'Available for opportunities' : 'Building cutting-edge tech'}
                 </span>
               </div>
             </motion.div>
@@ -257,104 +185,10 @@ export const Home: React.FC = () => {
             </motion.div>
           </motion.div>
 
-          {/* Right Column: Sleek Interactive Developer Architecture Terminal */}
-          <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-6 xl:col-span-5 relative w-full"
-          >
-            {/* Ambient card back-glow */}
-            <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-cyan-500/20 blur-xl opacity-75 pointer-events-none" />
-
-            <div className="relative rounded-2xl bg-neutral-950/85 border border-neutral-800/90 backdrop-blur-xl shadow-2xl overflow-hidden">
-              {/* macOS Window Chrome */}
-              <div className="flex items-center justify-between px-4 py-3 bg-neutral-900/90 border-b border-neutral-800">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-rose-500/80" />
-                  <span className="w-3 h-3 rounded-full bg-amber-500/80" />
-                  <span className="w-3 h-3 rounded-full bg-emerald-500/80" />
-                  <span className="ml-2 text-xs font-mono text-neutral-400">
-                    {SNIPPETS[activeTab].language}
-                  </span>
-                </div>
-
-                <button
-                  onClick={handleCopyCode}
-                  className="flex items-center gap-1.5 text-[11px] font-mono text-neutral-400 hover:text-white px-2 py-1 rounded bg-neutral-800/60 hover:bg-neutral-800 transition-colors"
-                  title="Copy snippet"
-                >
-                  {copied ? (
-                    <>
-                      <Check className="w-3 h-3 text-emerald-400" />
-                      <span className="text-emerald-400">Copied</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3 h-3" />
-                      <span>Copy</span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-              {/* Code Tabs */}
-              <div className="flex items-center border-b border-neutral-800/80 bg-neutral-950/60 px-2 overflow-x-auto scrollbar-none">
-                {SNIPPETS.map((snippet, idx) => (
-                  <button
-                    key={snippet.filename}
-                    onClick={() => setActiveTab(idx)}
-                    className={`px-3.5 py-2 text-xs font-mono transition-colors border-b-2 flex items-center gap-1.5 whitespace-nowrap ${
-                      activeTab === idx
-                        ? 'border-indigo-500 text-white font-medium bg-neutral-900/40'
-                        : 'border-transparent text-neutral-400 hover:text-neutral-300'
-                    }`}
-                  >
-                    <span>{snippet.filename}</span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Code Content */}
-              <div className="p-4 sm:p-5 font-mono text-xs sm:text-[13px] leading-relaxed text-neutral-300 overflow-x-auto max-h-[340px] sm:max-h-[380px]">
-                {SNIPPETS[activeTab].code.map((line, idx) => (
-                  <div key={idx} className="table-row">
-                    <span className="table-cell pr-4 text-right select-none text-neutral-600 text-xs">
-                      {idx + 1}
-                    </span>
-                    <span className="table-cell whitespace-pre">
-                      {line.startsWith('//') ? (
-                        <span className="text-neutral-500 italic">{line}</span>
-                      ) : line.includes('const ') || line.includes('class ') || line.includes('return ') || line.includes('export ') ? (
-                        <span>
-                          {line.split(/(const|class|return|export|function)/g).map((seg, sIdx) =>
-                            ['const', 'class', 'return', 'export', 'function'].includes(seg) ? (
-                              <span key={sIdx} className="text-indigo-400 font-semibold">{seg}</span>
-                            ) : (
-                              seg
-                            )
-                          )}
-                        </span>
-                      ) : line.includes('broadcast') || line.includes('useState') || line.includes('useEffect') ? (
-                        <span className="text-cyan-300">{line}</span>
-                      ) : (
-                        line
-                      )}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Terminal Footer Indicator */}
-              <div className="px-4 py-2.5 bg-neutral-900/70 border-t border-neutral-800/80 flex items-center justify-between text-[11px] font-mono text-neutral-400">
-                <span className="flex items-center gap-1.5 text-emerald-400">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Full-Stack Telemetry Active
-                </span>
-                <span className="text-neutral-400">UTF-8 // TypeScript</span>
-              </div>
-            </div>
-          </motion.div>
+          {/* Right Column: Modern Developer Profile Card */}
+          <div className="lg:col-span-6 xl:col-span-5 flex justify-center lg:justify-end">
+            <ProfileCard />
+          </div>
         </div>
       </div>
     </section>
