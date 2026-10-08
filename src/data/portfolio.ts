@@ -68,7 +68,7 @@ export const PROJECTS: Project[] = [
     id: 'healthhub',
     title: 'HealthHub',
     description:
-      'Hospital management & emergency platform featuring hospital discovery, bed & ambulance tracking, OPD queue, blood bank, appointments, and real-time updates.',
+      'Real-time emergency dispatch and hospital management platform with live bed & ambulance tracking, OPD queue management, blood bank availability, and Mapbox GIS routing.',
     image: '/src/assets/image/projects/healthhub.png',
     stack: [
       'Laravel 13',
@@ -101,7 +101,7 @@ export const PROJECTS: Project[] = [
     id: 'urbanstyle',
     title: 'UrbanStyle',
     description:
-      'Fashion e-commerce store with cart, user orders, and full admin panel for products, inventory and billing.',
+      'Modern fashion e-commerce storefront with reactive shopping cart, dynamic product filtering, seamless checkout workflows, and administrative inventory management.',
     image: '/src/assets/image/projects/urbanstyle.png',
     stack: ['React', 'Vite', 'Tailwind CSS', 'Context API'],
     tags: ['React', 'Vite', 'Tailwind CSS', 'E-Commerce'],
@@ -115,7 +115,7 @@ export const PROJECTS: Project[] = [
     id: 'complaint-management-system',
     title: 'Complaint Management System',
     description:
-      'Django-based complaint system with role-based access (User/Staff/Admin), dashboards, search & filters, comments timeline and email notifications.',
+      'Enterprise complaint lifecycle platform built with Django 6.0, featuring role-based access control (RBAC), multi-stage status workflows, audit logging, and automated email alerts.',
     image: '/src/assets/image/projects/complaint.png',
     stack: ['Django 6.0', 'Python', 'Bootstrap 5', 'SQLite / PostgreSQL'],
     tags: ['Django 6.0', 'Python', 'Bootstrap 5', 'RBAC', 'Email Alerts'],
@@ -129,7 +129,7 @@ export const PROJECTS: Project[] = [
     id: 'portfolio-v1',
     title: 'Personal Portfolio',
     description:
-      'Personal portfolio with 3D visuals, smooth animations, and dark mode.',
+      'Interactive 3D developer portfolio showcasing full-stack projects, WebGL constellation dynamics, fluid spring micro-interactions, and responsive dark aesthetics.',
     image: '/src/assets/image/projects/portfolio.png',
     stack: ['React', 'Three.js', 'Vite', 'Tailwind CSS', 'Framer Motion'],
     tags: ['React', 'Three.js', 'Vite', 'Tailwind CSS', '3D Visuals', 'Dark Mode'],
@@ -142,7 +142,8 @@ export const PROJECTS: Project[] = [
   {
     id: 'dream-cafe',
     title: 'Dream Cafe',
-    description: 'Modern cafe website with clean and responsive UI.',
+    description:
+      'Boutique cafe & artisan bistro web experience featuring an interactive digital menu, responsive reservation booking, customer reviews, and smooth UI transitions.',
     image: '/src/assets/image/projects/dreamcafe.png',
     stack: ['HTML5', 'Tailwind CSS', 'JavaScript'],
     tags: ['HTML5', 'Tailwind CSS', 'Responsive UI'],
@@ -173,6 +174,7 @@ export const SKILLS_BY_CATEGORY: Record<SkillCategory, Skill[]> = {
   ],
   Tools: [
     { name: 'Git & GitHub', category: 'Tools', level: 90 },
+    { name: 'Docker & Linux CLI', category: 'Tools', level: 82 },
     { name: 'Mapbox GL', category: 'Tools', level: 82 },
     { name: 'Postman / API Testing', category: 'Tools', level: 88 },
     { name: 'Vercel Deployment', category: 'Tools', level: 88 },

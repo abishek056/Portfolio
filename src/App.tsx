@@ -8,6 +8,7 @@ import { Projects } from './components/sections/Projects'
 import { Skills } from './components/sections/Skills'
 import { Contact } from './components/sections/Contact'
 import { LoadingScreen } from './components/ui/LoadingScreen'
+import { SpiderWebBackground } from './components/ui/SpiderWebBackground'
 
 /** Scroll-triggered fade+slide-up wrapper for each major section */
 const SectionReveal: React.FC<{ children: React.ReactNode; delay?: number }> = ({
@@ -31,13 +32,16 @@ const SectionReveal: React.FC<{ children: React.ReactNode; delay?: number }> = (
 
 export const App: React.FC = () => {
   return (
-    <div className="min-h-screen bg-[#07080e] text-neutral-100 flex flex-col selection:bg-indigo-500/40 selection:text-white">
+    <div className="relative min-h-screen bg-[#07080e] text-neutral-100 flex flex-col selection:bg-indigo-500/40 selection:text-white">
+      {/* Global Unified Spider-Web Constellation Background */}
+      <SpiderWebBackground />
+
       {/* Smooth Loading Screen */}
       <LoadingScreen />
 
       <Navbar />
 
-      <main className="grow">
+      <main className="relative grow z-10">
         {/* Home hero section */}
         <Home />
 
@@ -64,3 +68,4 @@ export const App: React.FC = () => {
 }
 
 export default App
+

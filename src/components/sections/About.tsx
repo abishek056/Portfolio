@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import { motion } from 'framer-motion'
 import {
   Sparkles,
@@ -15,7 +15,6 @@ import {
 } from 'lucide-react'
 import aboutImg from '../../assets/image/about/about.jpg'
 import signatureImg from '../../assets/image/about/signature.png'
-import { HeroScene } from '../3d/HeroScene'
 
 export const About: React.FC = () => {
   // 4 Small stats cards
@@ -53,12 +52,10 @@ export const About: React.FC = () => {
   return (
     <section
       id="about"
-      className="relative py-20 sm:py-28 border-t border-neutral-800/80 bg-[#07080e] overflow-hidden"
+      className="relative py-20 sm:py-28 lg:py-32 border-t border-neutral-800/80 bg-transparent overflow-hidden"
     >
-      {/* 3D Spider-web Constellation Background (Exact Hero Scene) */}
-      <Suspense fallback={null}>
-        <HeroScene />
-      </Suspense>
+      {/* Top Section Highlight Seam */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent pointer-events-none" />
 
       {/* Atmospheric Radial Gradients & Tech Grid */}
       <div className="absolute inset-0 pointer-events-none select-none">
@@ -173,7 +170,7 @@ export const About: React.FC = () => {
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.03, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-neutral-200 hover:text-white bg-neutral-900/90 hover:bg-neutral-800/90 border border-neutral-700/80 hover:border-indigo-500/40 backdrop-blur-md shadow-sm transition-all duration-300"
+                className="w-full sm:w-auto justify-center inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-neutral-200 hover:text-white bg-neutral-900/90 hover:bg-neutral-800/90 border border-neutral-700/80 hover:border-indigo-500/40 backdrop-blur-md shadow-sm transition-all duration-300"
               >
                 <Eye className="w-4 h-4 text-indigo-400" />
                 <span>View CV</span>
@@ -185,7 +182,7 @@ export const About: React.FC = () => {
                 download="Abishek_Adhikari_CV.pdf"
                 whileHover={{ scale: 1.03, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_28px_rgba(99,102,241,0.5)] transition-all duration-300"
+                className="w-full sm:w-auto justify-center group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_28px_rgba(99,102,241,0.5)] transition-all duration-300"
               >
                 <Download className="w-4 h-4 text-indigo-100 group-hover:-translate-y-0.5 transition-transform duration-300" />
                 <span>Download CV</span>
@@ -242,7 +239,7 @@ export const About: React.FC = () => {
                   </div>
 
                   {/* Email Field (Clean without copy button) */}
-                  <div className="p-3 rounded-xl bg-neutral-950/60 border border-neutral-800/70 flex items-center justify-between gap-3">
+                  <div className="p-3 rounded-xl bg-neutral-950/60 border border-neutral-800/70 flex items-center justify-between gap-3 min-w-0">
                     <div className="flex items-center gap-2 shrink-0">
                       <Mail className="w-3.5 h-3.5 text-indigo-400" />
                       <span className="text-xs font-mono text-neutral-400 uppercase tracking-wider">Email</span>
@@ -250,7 +247,7 @@ export const About: React.FC = () => {
 
                     <a
                       href="mailto:abishekadhikari056@gmail.com"
-                      className="text-xs sm:text-sm font-medium text-neutral-200 hover:text-indigo-300 transition-colors truncate text-right"
+                      className="text-xs sm:text-sm font-medium text-neutral-200 hover:text-indigo-300 transition-colors truncate text-right min-w-0"
                     >
                       abishekadhikari056@gmail.com
                     </a>

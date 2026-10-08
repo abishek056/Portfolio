@@ -32,8 +32,11 @@ export const Projects: React.FC = () => {
   return (
     <section
       id="projects"
-      className="relative py-24 sm:py-32 border-t border-neutral-800/80 bg-[#07080e] overflow-hidden"
+      className="relative py-20 sm:py-28 lg:py-32 border-t border-neutral-800/80 bg-transparent overflow-hidden"
     >
+      {/* Top Section Highlight Seam */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent pointer-events-none" />
+
       {/* Spider-Web & Constellation Particle Network Background */}
       <ProjectBackground3D />
 

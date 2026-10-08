@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react'
+import React, { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Sparkles,
@@ -21,205 +21,6 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 import { SKILLS_BY_CATEGORY, type SkillCategory, type Skill } from '../../data/portfolio'
-
-/* ─────────────────────────── Spider-Web Particle Canvas ─────────────────────────── */
-interface NodeParticle {
-  x: number
-  y: number
-  vx: number
-  vy: number
-  radius: number
-  color: string
-}
-
-const SpiderWebCanvas: React.FC = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const mouseRef = useRef<{ x: number; y: number; active: boolean }>({
-    x: -1000,
-    y: -1000,
-    active: false,
-  })
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    const container = containerRef.current
-    if (!canvas || !container) return
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    let animationFrameId: number
-    let isVisible = true
-    let width = 0
-    let height = 0
-    let particles: NodeParticle[] = []
-
-    const colors = [
-      'rgba(129, 140, 248, ', // Indigo
-      'rgba(56, 189, 248, ',  // Sky / Cyan
-      'rgba(192, 132, 252, ', // Purple
-    ]
-
-    const initParticles = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      width = container.clientWidth
-      height = container.clientHeight
-
-      canvas.width = width * dpr
-      canvas.height = height * dpr
-      canvas.style.width = `${width}px`
-      canvas.style.height = `${height}px`
-      ctx.scale(dpr, dpr)
-
-      const count = width < 640 ? 24 : width < 1024 ? 38 : 52
-      particles = []
-
-      for (let i = 0; i < count; i++) {
-        particles.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.4,
-          radius: Math.random() * 1.5 + 1.2,
-          color: colors[i % colors.length],
-        })
-      }
-    }
-
-    initParticles()
-
-    const handleResize = () => {
-      initParticles()
-    }
-
-    const ro = new ResizeObserver(handleResize)
-    ro.observe(container)
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = container.getBoundingClientRect()
-      mouseRef.current = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-        active: true,
-      }
-    }
-
-    const handleMouseLeave = () => {
-      mouseRef.current.active = false
-    }
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true })
-    container.addEventListener('mouseleave', handleMouseLeave)
-
-    const maxDistance = 115
-    const mouseMaxDistance = 145
-
-    const render = () => {
-      if (!isVisible) {
-        animationFrameId = requestAnimationFrame(render)
-        return
-      }
-
-      ctx.clearRect(0, 0, width, height)
-      const mouse = mouseRef.current
-
-      for (let i = 0; i < particles.length; i++) {
-        const p1 = particles[i]
-        p1.x += p1.vx
-        p1.y += p1.vy
-
-        if (p1.x < 0) {
-          p1.x = 0
-          p1.vx *= -1
-        } else if (p1.x > width) {
-          p1.x = width
-          p1.vx *= -1
-        }
-        if (p1.y < 0) {
-          p1.y = 0
-          p1.vy *= -1
-        } else if (p1.y > height) {
-          p1.y = height
-          p1.vy *= -1
-        }
-
-        // Particle-to-particle spider-web lines
-        for (let j = i + 1; j < particles.length; j++) {
-          const p2 = particles[j]
-          const dx = p1.x - p2.x
-          const dy = p1.y - p2.y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-
-          if (dist < maxDistance) {
-            const alpha = (1 - dist / maxDistance) * 0.2
-            ctx.beginPath()
-            ctx.moveTo(p1.x, p1.y)
-            ctx.lineTo(p2.x, p2.y)
-            ctx.strokeStyle = `rgba(129, 140, 248, ${alpha})`
-            ctx.lineWidth = 0.8
-            ctx.stroke()
-          }
-        }
-
-        // Mouse interactive connection
-        if (mouse.active) {
-          const mdx = p1.x - mouse.x
-          const mdy = p1.y - mouse.y
-          const mDist = Math.sqrt(mdx * mdx + mdy * mdy)
-
-          if (mDist < mouseMaxDistance) {
-            const mAlpha = (1 - mDist / mouseMaxDistance) * 0.35
-            ctx.beginPath()
-            ctx.moveTo(p1.x, p1.y)
-            ctx.lineTo(mouse.x, mouse.y)
-            ctx.strokeStyle = `rgba(168, 85, 247, ${mAlpha})`
-            ctx.lineWidth = 1
-            ctx.stroke()
-
-            p1.x -= (mdx / mDist) * 0.12
-            p1.y -= (mdy / mDist) * 0.12
-          }
-        }
-
-        // Draw particle node
-        ctx.beginPath()
-        ctx.arc(p1.x, p1.y, p1.radius, 0, Math.PI * 2)
-        ctx.fillStyle = `${p1.color}0.85)`
-        ctx.shadowColor = `${p1.color}0.7)`
-        ctx.shadowBlur = 5
-        ctx.fill()
-        ctx.shadowBlur = 0
-      }
-
-      animationFrameId = requestAnimationFrame(render)
-    }
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        isVisible = entry.isIntersecting
-      },
-      { threshold: 0.05 }
-    )
-    io.observe(container)
-
-    animationFrameId = requestAnimationFrame(render)
-
-    return () => {
-      cancelAnimationFrame(animationFrameId)
-      ro.disconnect()
-      io.disconnect()
-      window.removeEventListener('mousemove', handleMouseMove)
-      container.removeEventListener('mouseleave', handleMouseLeave)
-    }
-  }, [])
-
-  return (
-    <div ref={containerRef} className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
-      <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full pointer-events-none" />
-    </div>
-  )
-}
 
 /* ─────────────────────────── Skill Metadata Map ─────────────────────────── */
 interface SkillInfo {
@@ -298,6 +99,11 @@ const SKILL_DETAILS: Record<string, SkillInfo> = {
     icon: GitBranch,
     subtags: ['Version Control', 'PR Reviews', 'CI/CD'],
     accent: 'text-orange-400 group-hover:text-orange-300',
+  },
+  'Docker & Linux CLI': {
+    icon: Terminal,
+    subtags: ['Containers', 'Bash', 'DevOps'],
+    accent: 'text-sky-400 group-hover:text-sky-300',
   },
   'Mapbox GL': {
     icon: MapPin,
@@ -393,10 +199,10 @@ export const Skills: React.FC = () => {
   return (
     <section
       id="skills"
-      className="relative py-20 sm:py-28 border-t border-neutral-800/80 bg-[#07080e] overflow-hidden"
+      className="relative py-20 sm:py-28 lg:py-32 border-t border-neutral-800/80 bg-transparent overflow-hidden"
     >
-      {/* Spider-Web & Constellation Background */}
-      <SpiderWebCanvas />
+      {/* Top Section Highlight Seam */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent pointer-events-none" />
 
       {/* Ambient Radial Color Glows */}
       <div className="absolute top-1/4 -left-28 w-[450px] h-[450px] rounded-full bg-indigo-600/10 blur-[130px] pointer-events-none" />

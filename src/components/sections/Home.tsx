@@ -42,17 +42,17 @@ export const Home: React.FC = () => {
   return (
     <section
       id="hero"
-      className="relative min-h-screen min-h-[100dvh] w-full flex items-center justify-center overflow-hidden bg-[#07080e] pt-24 pb-16 lg:py-0"
+      className="relative min-h-screen min-h-[100dvh] w-full flex items-center justify-center overflow-hidden bg-transparent pt-24 pb-16 lg:py-0"
     >
       <span id="home" className="absolute -top-24" aria-hidden="true" />
 
-      {/* 3D Spider-web Constellation Background (Full Bleed) */}
+      {/* 3D Floating Crystals Scene */}
       <Suspense fallback={null}>
         <HeroScene />
       </Suspense>
 
       {/* Atmospheric Radial Gradients */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none select-none">
         <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-indigo-600/10 blur-[130px]" />
         <div className="absolute top-1/3 right-1/4 w-[480px] h-[480px] rounded-full bg-purple-600/10 blur-[140px]" />
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-cyan-600/5 blur-[120px]" />
@@ -124,13 +124,13 @@ export const Home: React.FC = () => {
             </motion.div>
 
             {/* Action Buttons & Socials */}
-            <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4 pt-2">
+            <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-3 sm:gap-4 pt-2">
               {/* Primary CTA */}
               <motion.a
                 href="#projects"
                 whileHover={{ scale: 1.03, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="group relative inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-sm text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-[0_0_24px_rgba(99,102,241,0.35)] hover:shadow-[0_0_32px_rgba(99,102,241,0.55)] transition-all duration-300"
+                className="w-full sm:w-auto group relative inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-sm text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-[0_0_24px_rgba(99,102,241,0.35)] hover:shadow-[0_0_32px_rgba(99,102,241,0.55)] transition-all duration-300"
               >
                 <Sparkles className="w-4 h-4 text-indigo-200 group-hover:rotate-12 transition-transform duration-300" />
                 <span>View Projects</span>
@@ -142,14 +142,14 @@ export const Home: React.FC = () => {
                 href="#contact"
                 whileHover={{ scale: 1.03, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-sm text-neutral-200 hover:text-white bg-neutral-900/90 hover:bg-neutral-800/90 border border-neutral-800 hover:border-neutral-700 backdrop-blur-md transition-all duration-300 shadow-sm"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-sm text-neutral-200 hover:text-white bg-neutral-900/90 hover:bg-neutral-800/90 border border-neutral-800 hover:border-neutral-700 backdrop-blur-md transition-all duration-300 shadow-sm"
               >
                 <Send className="w-4 h-4 text-indigo-400" />
                 <span>Contact Me</span>
               </motion.a>
 
               {/* Social Links */}
-              <div className="flex items-center gap-2 sm:pl-2">
+              <div className="flex items-center gap-2 pt-1 sm:pt-0 sm:pl-2">
                 <motion.a
                   href={PERSONAL_INFO.github}
                   target="_blank"
