@@ -1,45 +1,226 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 
-interface Particle {
-  id: number
+interface NodeParticle {
   x: number
   y: number
-  size: number
-  duration: number
-  delay: number
+  vx: number
+  vy: number
+  radius: number
   color: string
 }
 
 export const ProjectBackground3D: React.FC = () => {
-  // Generate random light particles once
-  const particles: Particle[] = useMemo(() => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const mouseRef = useRef<{ x: number; y: number; active: boolean }>({
+    x: -1000,
+    y: -1000,
+    active: false,
+  })
+
+  // Canvas-based interactive spider-web constellation
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const container = containerRef.current
+    if (!canvas || !container) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    let animationFrameId: number
+    let isVisible = true
+    let width = 0
+    let height = 0
+    let particles: NodeParticle[] = []
+
     const colors = [
-      'rgba(99, 102, 241, 0.45)', // Indigo
-      'rgba(56, 189, 248, 0.45)', // Sky
-      'rgba(168, 85, 247, 0.45)', // Purple
-      'rgba(236, 72, 153, 0.35)', // Pink
+      'rgba(129, 140, 248, ', // Indigo
+      'rgba(56, 189, 248, ',  // Sky / Cyan
+      'rgba(192, 132, 252, ', // Purple
     ]
-    return Array.from({ length: 16 }).map((_, i) => ({
-      id: i,
-      x: (i * 17 + 7) % 96 + 2,
-      y: (i * 23 + 13) % 94 + 3,
-      size: (i % 3) * 1.5 + 2,
-      duration: 7 + (i % 6) * 2,
-      delay: (i % 5) * 1.2,
-      color: colors[i % colors.length],
-    }))
+
+    const initParticles = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      width = container.clientWidth
+      height = container.clientHeight
+
+      canvas.width = width * dpr
+      canvas.height = height * dpr
+      canvas.style.width = `${width}px`
+      canvas.style.height = `${height}px`
+      ctx.scale(dpr, dpr)
+
+      // Adjust particle count dynamically based on screen width
+      const count = width < 640 ? 28 : width < 1024 ? 44 : 58
+      particles = []
+
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.45,
+          vy: (Math.random() - 0.5) * 0.45,
+          radius: Math.random() * 1.5 + 1.2,
+          color: colors[i % colors.length],
+        })
+      }
+    }
+
+    initParticles()
+
+    const handleResize = () => {
+      initParticles()
+    }
+
+    const ro = new ResizeObserver(handleResize)
+    ro.observe(container)
+
+    // Track mouse for interactive spider-web connection
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect()
+      mouseRef.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+        active: true,
+      }
+    }
+
+    const handleMouseLeave = () => {
+      mouseRef.current.active = false
+    }
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
+    container.addEventListener('mouseleave', handleMouseLeave)
+
+    const maxDistance = 115
+    const mouseMaxDistance = 150
+
+    // Animation loop
+    const render = () => {
+      if (!isVisible) {
+        animationFrameId = requestAnimationFrame(render)
+        return
+      }
+
+      ctx.clearRect(0, 0, width, height)
+
+      const mouse = mouseRef.current
+
+      // 1. Update and draw connection lines (Spider-Web effect)
+      for (let i = 0; i < particles.length; i++) {
+        const p1 = particles[i]
+
+        // Update particle positions
+        p1.x += p1.vx
+        p1.y += p1.vy
+
+        // Gentle boundary bounce with damping
+        if (p1.x < 0) {
+          p1.x = 0
+          p1.vx *= -1
+        } else if (p1.x > width) {
+          p1.x = width
+          p1.vx *= -1
+        }
+        if (p1.y < 0) {
+          p1.y = 0
+          p1.vy *= -1
+        } else if (p1.y > height) {
+          p1.y = height
+          p1.vy *= -1
+        }
+
+        // Particle to particle spider-web lines
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j]
+          const dx = p1.x - p2.x
+          const dy = p1.y - p2.y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+
+          if (dist < maxDistance) {
+            const alpha = (1 - dist / maxDistance) * 0.22
+            ctx.beginPath()
+            ctx.moveTo(p1.x, p1.y)
+            ctx.lineTo(p2.x, p2.y)
+            ctx.strokeStyle = `rgba(129, 140, 248, ${alpha})`
+            ctx.lineWidth = 0.85
+            ctx.stroke()
+          }
+        }
+
+        // Mouse interactive spider-web connection
+        if (mouse.active) {
+          const mdx = p1.x - mouse.x
+          const mdy = p1.y - mouse.y
+          const mDist = Math.sqrt(mdx * mdx + mdy * mdy)
+
+          if (mDist < mouseMaxDistance) {
+            const mAlpha = (1 - mDist / mouseMaxDistance) * 0.4
+            ctx.beginPath()
+            ctx.moveTo(p1.x, p1.y)
+            ctx.lineTo(mouse.x, mouse.y)
+            ctx.strokeStyle = `rgba(168, 85, 247, ${mAlpha})`
+            ctx.lineWidth = 1.1
+            ctx.stroke()
+
+            // Subtle attraction toward cursor
+            p1.x -= (mdx / mDist) * 0.15
+            p1.y -= (mdy / mDist) * 0.15
+          }
+        }
+
+        // Draw particle node
+        ctx.beginPath()
+        ctx.arc(p1.x, p1.y, p1.radius, 0, Math.PI * 2)
+        ctx.fillStyle = `${p1.color}0.85)`
+        ctx.shadowColor = `${p1.color}0.8)`
+        ctx.shadowBlur = 6
+        ctx.fill()
+        ctx.shadowBlur = 0 // Reset shadow for line rendering
+      }
+
+      animationFrameId = requestAnimationFrame(render)
+    }
+
+    // Intersection observer to pause loop off-screen
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting
+      },
+      { threshold: 0.05 }
+    )
+    io.observe(container)
+
+    animationFrameId = requestAnimationFrame(render)
+
+    return () => {
+      cancelAnimationFrame(animationFrameId)
+      ro.disconnect()
+      io.disconnect()
+      window.removeEventListener('mousemove', handleMouseMove)
+      container.removeEventListener('mouseleave', handleMouseLeave)
+    }
   }, [])
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
+    <div
+      ref={containerRef}
+      className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0"
+    >
       {/* Ambient Radial Color Glows */}
-      <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-indigo-600/10 blur-[130px] pointer-events-none" />
-      <div className="absolute top-2/3 -right-32 w-[550px] h-[550px] rounded-full bg-purple-600/10 blur-[140px] pointer-events-none" />
-      <div className="absolute -bottom-20 left-1/3 w-[450px] h-[450px] rounded-full bg-cyan-600/10 blur-[130px] pointer-events-none" />
+      <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-indigo-600/12 blur-[130px]" />
+      <div className="absolute top-2/3 -right-32 w-[550px] h-[550px] rounded-full bg-purple-600/12 blur-[140px]" />
+      <div className="absolute -bottom-20 left-1/3 w-[450px] h-[450px] rounded-full bg-cyan-600/10 blur-[130px]" />
 
       {/* Cyber Grid with Elliptical Radial Mask */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#312e810c_1px,transparent_1px),linear-gradient(to_bottom,#312e810c_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_80%_65%_at_50%_50%,#000_50%,transparent_90%)] opacity-70" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#312e810a_1px,transparent_1px),linear-gradient(to_bottom,#312e810a_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_80%_65%_at_50%_50%,#000_50%,transparent_90%)] opacity-70" />
+
+      {/* Canvas Spider-Web & Constellation Particle Network */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 block w-full h-full pointer-events-none"
+      />
 
       {/* Floating 3D Geometric Shape 1: Floating Icosahedron Wireframe (Top Right) */}
       <motion.div
@@ -49,7 +230,7 @@ export const ProjectBackground3D: React.FC = () => {
           rotateX: [15, 30, 15],
         }}
         transition={{
-          duration: 24,
+          duration: 26,
           repeat: Infinity,
           ease: 'easeInOut',
         }}
@@ -74,7 +255,7 @@ export const ProjectBackground3D: React.FC = () => {
           rotateY: [-15, 15, -15],
         }}
         transition={{
-          duration: 28,
+          duration: 30,
           repeat: Infinity,
           ease: 'easeInOut',
         }}
@@ -99,7 +280,7 @@ export const ProjectBackground3D: React.FC = () => {
           rotateX: [55, 65, 55],
         }}
         transition={{
-          duration: 32,
+          duration: 34,
           repeat: Infinity,
           ease: 'linear',
         }}
@@ -114,35 +295,8 @@ export const ProjectBackground3D: React.FC = () => {
           <circle cx="15" cy="64" r="2" fill="#818cf8" />
         </svg>
       </motion.div>
-
-      {/* Drifting Light Particle Dust */}
-      {particles.map((p) => (
-        <motion.div
-          key={p.id}
-          className="absolute rounded-full pointer-events-none transform-gpu"
-          style={{
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            width: `${p.size}px`,
-            height: `${p.size}px`,
-            backgroundColor: p.color,
-            boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-            willChange: 'transform, opacity',
-          }}
-          animate={{
-            y: [-12, 12, -12],
-            x: [-6, 6, -6],
-            opacity: [0.2, 0.65, 0.2],
-          }}
-          transition={{
-            duration: p.duration,
-            delay: p.delay,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-      ))}
     </div>
   )
 }
+
 export default ProjectBackground3D

@@ -10,7 +10,7 @@ FONT_MONO = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", 14, index=0)
 FONT_SMALL = ImageFont.truetype("/System/Library/Fonts/HelveticaNeue.ttc", 13, index=0)
 
 W, H = 1200, 675
-OUT_DIR = "src/assets/images/projects"
+OUT_DIR = "src/assets/image/projects"
 os.makedirs(OUT_DIR, exist_ok=True)
 
 def draw_window_frame(draw, title, domain="https://app.preview"):
@@ -173,7 +173,7 @@ def create_urbanstyle():
 def create_complaint():
     img = Image.new("RGBA", (W, H), (12, 16, 24, 255))
     draw = ImageDraw.Draw(img)
-    draw_window_frame(draw, "Django Complaint Management & Audit System", "https://github.com/abishek056/complaint-management-system")
+    draw_window_frame(draw, "Django Complaint Management & Audit System", "https://complaint-management-system-smoky-eta.vercel.app")
     
     # Top navbar
     draw.rectangle([0, 48, W, 105], fill=(16, 22, 34))

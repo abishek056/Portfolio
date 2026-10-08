@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, Code2, FolderGit2, Layers } from 'lucide-react'
+import { Sparkles, Code2, Layers, Monitor, Server } from 'lucide-react'
 import { PROJECTS, type ProjectCategory } from '../../data/portfolio'
 import { ProjectCard3D } from './projects/ProjectCard3D'
 import { ProjectBackground3D } from './projects/ProjectBackground3D'
@@ -12,7 +12,7 @@ const FILTERS: FilterType[] = ['All', 'Full-Stack', 'Frontend', 'Backend']
 export const Projects: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<FilterType>('All')
 
-  // Calculate count per category
+  // Calculate project count per category
   const filterCounts = useMemo(() => {
     const counts: Record<FilterType, number> = {
       All: PROJECTS.length,
@@ -23,7 +23,7 @@ export const Projects: React.FC = () => {
     return counts
   }, [])
 
-  // Filtered projects
+  // Filtered projects list
   const filteredProjects = useMemo(() => {
     if (activeFilter === 'All') return PROJECTS
     return PROJECTS.filter((project) => project.category === activeFilter)
@@ -32,14 +32,14 @@ export const Projects: React.FC = () => {
   return (
     <section
       id="projects"
-      className="relative py-24 sm:py-32 border-t border-neutral-800/80 bg-[#07080d] overflow-hidden"
+      className="relative py-24 sm:py-32 border-t border-neutral-800/80 bg-[#07080e] overflow-hidden"
     >
-      {/* 3D Floating Shapes & Light Particles in Background */}
+      {/* Spider-Web & Constellation Particle Network Background */}
       <ProjectBackground3D />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-14 space-y-4">
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14 space-y-4">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -73,19 +73,23 @@ export const Projects: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-base sm:text-lg text-neutral-300 max-w-2xl mx-auto leading-relaxed"
           >
-            Explore real-time emergency dispatch platforms, full-stack architectures, e-commerce storefronts, and interactive 3D web experiences.
+            Explore real-time emergency dispatch platforms, full-stack systems, e-commerce storefronts, and interactive web applications.
           </motion.p>
         </div>
 
-        {/* Filter Buttons with Animated Active Pill */}
+        {/* Filter Buttons with Animated Active Sliding Pill */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.25 }}
-          className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-14"
+          className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-12 sm:mb-14"
         >
-          <div className="p-1.5 rounded-2xl bg-neutral-900/90 border border-neutral-800 backdrop-blur-xl shadow-xl flex flex-wrap items-center justify-center gap-1 sm:gap-1.5">
+          <div
+            role="tablist"
+            aria-label="Filter projects by category"
+            className="p-1.5 rounded-2xl bg-neutral-900/90 border border-neutral-800/90 backdrop-blur-xl shadow-xl flex flex-wrap items-center justify-center gap-1 sm:gap-1.5"
+          >
             {FILTERS.map((filter) => {
               const isActive = activeFilter === filter
               const count = filterCounts[filter]
@@ -93,26 +97,27 @@ export const Projects: React.FC = () => {
               return (
                 <button
                   key={filter}
+                  role="tab"
+                  aria-selected={isActive}
                   onClick={() => setActiveFilter(filter)}
                   className={`relative px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-colors duration-200 cursor-pointer flex items-center gap-2 ${
                     isActive ? 'text-white' : 'text-neutral-400 hover:text-neutral-200'
                   }`}
-                  aria-pressed={isActive}
                 >
                   {/* Sliding Pill Background with LayoutId */}
                   {isActive && (
                     <motion.div
                       layoutId="activeProjectFilterPill"
                       className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 shadow-[0_0_20px_rgba(99,102,241,0.4)]"
-                      transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
                   )}
 
                   <span className="relative z-10 flex items-center gap-1.5">
                     {filter === 'All' && <Layers className="w-3.5 h-3.5" />}
                     {filter === 'Full-Stack' && <Code2 className="w-3.5 h-3.5" />}
-                    {filter === 'Frontend' && <Sparkles className="w-3.5 h-3.5" />}
-                    {filter === 'Backend' && <FolderGit2 className="w-3.5 h-3.5" />}
+                    {filter === 'Frontend' && <Monitor className="w-3.5 h-3.5" />}
+                    {filter === 'Backend' && <Server className="w-3.5 h-3.5" />}
                     <span>{filter}</span>
                     <span
                       className={`text-[11px] font-mono px-1.5 py-0.2 rounded-md ${
@@ -130,10 +135,10 @@ export const Projects: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* 3D Projects Grid with Fluid Reordering Animation */}
+        {/* Projects Grid with Fluid Reordering Animation */}
         <motion.div
           layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 items-stretch"
         >
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, index) => (
