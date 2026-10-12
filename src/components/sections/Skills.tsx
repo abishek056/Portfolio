@@ -1,490 +1,609 @@
-import React, { useState, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import {
-  Sparkles,
-  Monitor,
-  Server,
-  Wrench,
-  Layers,
-  Code2,
-  Terminal,
-  Database,
-  Cpu,
-  Globe,
-  Radio,
-  GitBranch,
-  MapPin,
-  Send,
-  Cloud,
-  Package,
-  Boxes,
-  CheckCircle2,
-} from 'lucide-react'
-import { SKILLS_BY_CATEGORY, type SkillCategory, type Skill } from '../../data/portfolio'
+import React, { useRef, useState, useEffect } from 'react'
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { SkillsScene3D } from './skills/SkillsScene3D'
 
-/* ─────────────────────────── Skill Metadata Map ─────────────────────────── */
-interface SkillInfo {
-  icon: React.ComponentType<{ className?: string }>
-  subtags: string[]
-  accent: string
+/* ═══════════════════════════════════════════════════════════
+   BRAND SVG ICONS  (inline, no dep)
+═══════════════════════════════════════════════════════════ */
+
+const ReactLogo = ({ size = 48 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <circle cx="50" cy="50" r="9" fill="#22d3ee" />
+    <ellipse cx="50" cy="50" rx="46" ry="18" stroke="#22d3ee" strokeWidth="3.5" fill="none" />
+    <ellipse cx="50" cy="50" rx="46" ry="18" stroke="#22d3ee" strokeWidth="3.5" fill="none"
+      transform="rotate(60 50 50)" />
+    <ellipse cx="50" cy="50" rx="46" ry="18" stroke="#22d3ee" strokeWidth="3.5" fill="none"
+      transform="rotate(120 50 50)" />
+  </svg>
+)
+
+const TypeScriptLogo = ({ size = 48 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <rect width="100" height="100" rx="14" fill="#3178c6" opacity={0.25} />
+    <rect width="100" height="100" rx="14" stroke="#60a5fa" strokeWidth="2.5" fill="none" />
+    <text x="8" y="72" fontSize="52" fontWeight="900" fill="#60a5fa" fontFamily="monospace">TS</text>
+  </svg>
+)
+
+const TailwindLogo = ({ size = 48 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <path
+      d="M50 22c-11 0-18 5.5-21.5 16.5C33 32 38.5 29.5 45 31c3.1.8 5.3 3 7.7 5.5 4 4.1 8.6 8.8 18.8 8.8C82.5 45.3 89 39.8 92.5 28.8 87.5 35.7 82 38.2 75.5 36.7c-3.1-.8-5.3-3-7.7-5.5C63.8 27.1 59.2 22 50 22Z"
+      fill="#818cf8"
+    />
+    <path
+      d="M28.5 45.3c-11 0-18 5.5-21.5 16.5 4.5-6.5 10-9 16.5-7.5 3.1.8 5.3 3 7.7 5.5 4 4.1 8.6 8.8 18.8 8.8 11 0 17.5-5.5 21-16.5C66 58.6 60.5 61 54 59.5c-3.1-.8-5.3-3-7.7-5.5-4-4.1-8.6-8.7-17.8-8.7Z"
+      fill="#818cf8"
+    />
+  </svg>
+)
+
+const ThreejsLogo = ({ size = 48 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <polygon points="50,8 96,90 4,90" stroke="#c084fc" strokeWidth="4" fill="none" />
+    <polygon points="50,30 78,78 22,78" fill="#c084fc" opacity={0.3} />
+    <polygon points="50,52 64,76 36,76" fill="#c084fc" opacity={0.6} />
+    <circle cx="50" cy="8" r="4" fill="#c084fc" />
+    <circle cx="96" cy="90" r="4" fill="#c084fc" />
+    <circle cx="4" cy="90" r="4" fill="#c084fc" />
+  </svg>
+)
+
+const LaravelLogo = ({ size = 48 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <path
+      d="M96 26L72 10 48 26v32l24 16 24-16V26z"
+      stroke="#f87171" strokeWidth="3" fill="none" strokeLinejoin="round"
+    />
+    <path
+      d="M48 26L24 10 0 26v32l24 16 24-16"
+      stroke="#f87171" strokeWidth="3" fill="none" strokeLinejoin="round" opacity={0.5}
+    />
+    <path d="M72 10v32M48 26v32M96 26L72 58M48 58L24 42M24 10v32M0 26L24 42"
+      stroke="#f87171" strokeWidth="1.5" opacity={0.35} />
+    <circle cx="72" cy="10" r="5" fill="#f87171" />
+    <circle cx="72" cy="58" r="5" fill="#f87171" opacity={0.7} />
+    <circle cx="96" cy="26" r="5" fill="#f87171" opacity={0.5} />
+  </svg>
+)
+
+const DjangoLogo = ({ size = 48 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <rect x="6" y="6" width="88" height="88" rx="12" stroke="#34d399" strokeWidth="3" fill="none" opacity={0.4} />
+    <text x="14" y="62" fontSize="34" fontWeight="900" fill="#34d399" fontFamily="serif" letterSpacing="-2">DJ</text>
+    <path d="M16 72 h68" stroke="#34d399" strokeWidth="2" opacity={0.5} />
+    <text x="14" y="88" fontSize="14" fontWeight="600" fill="#34d399" fontFamily="monospace" opacity={0.7}>PYTHON</text>
+  </svg>
+)
+
+const NodejsLogo = ({ size = 48 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <path
+      d="M50 8L88 30v44L50 96 12 74V30L50 8Z"
+      stroke="#4ade80" strokeWidth="3" fill="none" strokeLinejoin="round"
+    />
+    <path d="M50 8v88M12 30l38 22 38-22M50 52l38 22M50 52L12 74"
+      stroke="#4ade80" strokeWidth="1.5" opacity={0.3} />
+    <circle cx="50" cy="50" r="14" stroke="#4ade80" strokeWidth="2.5" fill="none" />
+    <circle cx="50" cy="50" r="6" fill="#4ade80" opacity={0.7} />
+  </svg>
+)
+
+const GitLogo = ({ size = 48 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <circle cx="24" cy="24" r="9" fill="#f97316" stroke="#f97316" strokeWidth="2" />
+    <circle cx="76" cy="24" r="9" fill="#f97316" stroke="#f97316" strokeWidth="2" opacity={0.6} />
+    <circle cx="24" cy="76" r="9" fill="#f97316" stroke="#f97316" strokeWidth="2" opacity={0.6} />
+    <line x1="24" y1="33" x2="24" y2="67" stroke="#f97316" strokeWidth="3.5" strokeLinecap="round" />
+    <path d="M33 24 h20 a20 20 0 0 1 20 20 v9"
+      stroke="#f97316" strokeWidth="3.5" strokeLinecap="round" fill="none" />
+    <path d="M24 67 q0 12 20 12 h8"
+      stroke="#f97316" strokeWidth="3.5" strokeLinecap="round" fill="none" opacity={0.5} />
+  </svg>
+)
+
+const GithubLogo = ({ size = 48 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <path
+      d="M50 8C27 8 8 27 8 50c0 18.5 12 34.3 28.7 39.8 2.1.4 2.9-.9 2.9-2v-7c-11.7 2.5-14.1-5.6-14.1-5.6-1.9-4.8-4.7-6.1-4.7-6.1-3.8-2.6.3-2.5.3-2.5 4.2.3 6.4 4.3 6.4 4.3 3.7 6.4 9.8 4.5 12.2 3.5.4-2.7 1.5-4.5 2.7-5.5-9.3-1.1-19.1-4.7-19.1-20.8 0-4.6 1.6-8.3 4.3-11.3-.4-1-1.8-5.3.4-11.1 0 0 3.5-1.1 11.5 4.3a39.6 39.6 0 0 1 21 0c8-5.4 11.4-4.3 11.4-4.3 2.3 5.8.9 10.1.4 11.1 2.7 3 4.3 6.7 4.3 11.3 0 16.2-9.8 19.7-19.2 20.8 1.5 1.3 2.9 3.9 2.9 7.8v11.6c0 1.1.7 2.4 2.9 2C80 84.3 92 68.5 92 50 92 27 73 8 50 8Z"
+      fill="#a78bfa"
+    />
+  </svg>
+)
+
+const VercelLogo = ({ size = 48 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <polygon points="50,10 95,88 5,88" fill="#e2e8f0" opacity={0.9} />
+    <polygon points="50,10 95,88 5,88" stroke="#e2e8f0" strokeWidth="2"
+      fill="none" opacity={0.4} />
+  </svg>
+)
+
+/* ═══════════════════════════════════════════════════════════
+   SKILL DATA  (10 focused skills as per requirements)
+═══════════════════════════════════════════════════════════ */
+interface Skill {
+  name: string
+  desc: string
+  Logo: React.FC<{ size?: number }>
+  color: string        // primary neon accent
+  glow: string         // rgba prefix for box-shadow
+  category: 'frontend' | 'backend' | 'tools'
 }
 
-const SKILL_DETAILS: Record<string, SkillInfo> = {
+const SKILLS: Skill[] = [
   // Frontend
-  'React 19 / React': {
-    icon: Code2,
-    subtags: ['Hooks', 'Vite', 'Three.js'],
-    accent: 'text-cyan-400 group-hover:text-cyan-300',
-  },
-  'TypeScript / JavaScript': {
-    icon: Terminal,
-    subtags: ['ESNext', 'Generics', 'Strict Typing'],
-    accent: 'text-sky-400 group-hover:text-sky-300',
-  },
-  'Tailwind CSS': {
-    icon: Layers,
-    subtags: ['v4 & v3', 'Flex/Grid', 'Dark Mode'],
-    accent: 'text-cyan-400 group-hover:text-cyan-300',
-  },
-  Vite: {
-    icon: Cpu,
-    subtags: ['Fast HMR', 'Rollup Bundler'],
-    accent: 'text-purple-400 group-hover:text-purple-300',
-  },
-  'React Native': {
-    icon: Globe,
-    subtags: ['Cross-Platform', 'Mobile UI'],
-    accent: 'text-sky-400 group-hover:text-sky-300',
-  },
-  'Bootstrap 5 / CSS3 / HTML5': {
-    icon: Boxes,
-    subtags: ['Semantic HTML', 'Responsive'],
-    accent: 'text-purple-400 group-hover:text-purple-300',
-  },
-
+  { name: 'React',        desc: 'UI Library',        Logo: ReactLogo,      color: '#22d3ee', glow: '34,211,238',  category: 'frontend' },
+  { name: 'TypeScript',   desc: 'Typed JavaScript',  Logo: TypeScriptLogo, color: '#60a5fa', glow: '96,165,250',  category: 'frontend' },
+  { name: 'Tailwind CSS', desc: 'Utility-first CSS', Logo: TailwindLogo,   color: '#818cf8', glow: '129,140,248', category: 'frontend' },
+  { name: 'Three.js',     desc: '3D & WebGL',        Logo: ThreejsLogo,    color: '#c084fc', glow: '192,132,252', category: 'frontend' },
   // Backend
-  'Laravel 13 / PHP 8.3': {
-    icon: Server,
-    subtags: ['Eloquent ORM', 'Queues', 'Routing'],
-    accent: 'text-rose-400 group-hover:text-rose-300',
-  },
-  'Django 6.0 / Python': {
-    icon: Code2,
-    subtags: ['Django REST', 'ORM Models', 'RBAC'],
-    accent: 'text-emerald-400 group-hover:text-emerald-300',
-  },
-  'MySQL / Relational Databases': {
-    icon: Database,
-    subtags: ['Schemas', 'Indexing', 'Query Tuning'],
-    accent: 'text-indigo-400 group-hover:text-indigo-300',
-  },
-  'Laravel Sanctum (Auth)': {
-    icon: Cpu,
-    subtags: ['API Tokens', 'SPA Security'],
-    accent: 'text-rose-400 group-hover:text-rose-300',
-  },
-  'Laravel Reverb (WebSockets)': {
-    icon: Radio,
-    subtags: ['Real-Time Broadcast', 'Echo'],
-    accent: 'text-amber-400 group-hover:text-amber-300',
-  },
-  'RESTful APIs': {
-    icon: Globe,
-    subtags: ['JSON Spec', 'Architecture', 'Rate Limits'],
-    accent: 'text-indigo-400 group-hover:text-indigo-300',
-  },
-
+  { name: 'Laravel',      desc: 'PHP Framework',     Logo: LaravelLogo,    color: '#f87171', glow: '248,113,113', category: 'backend'  },
+  { name: 'Django',       desc: 'Python Framework',  Logo: DjangoLogo,     color: '#34d399', glow: '52,211,153',  category: 'backend'  },
+  { name: 'Node.js',      desc: 'JS Runtime',        Logo: NodejsLogo,     color: '#4ade80', glow: '74,222,128',  category: 'backend'  },
   // Tools
-  'Git & GitHub': {
-    icon: GitBranch,
-    subtags: ['Version Control', 'PR Reviews', 'CI/CD'],
-    accent: 'text-orange-400 group-hover:text-orange-300',
-  },
-  'Docker & Linux CLI': {
-    icon: Terminal,
-    subtags: ['Containers', 'Bash', 'DevOps'],
-    accent: 'text-sky-400 group-hover:text-sky-300',
-  },
-  'Mapbox GL': {
-    icon: MapPin,
-    subtags: ['GIS Mapping', 'GeoJSON Data'],
-    accent: 'text-emerald-400 group-hover:text-emerald-300',
-  },
-  'Postman / API Testing': {
-    icon: Send,
-    subtags: ['API Validation', 'Automation'],
-    accent: 'text-amber-400 group-hover:text-amber-300',
-  },
-  'Vercel Deployment': {
-    icon: Cloud,
-    subtags: ['Edge CDN', 'Instant Deploys'],
-    accent: 'text-sky-400 group-hover:text-sky-300',
-  },
-  'Composer & npm': {
-    icon: Package,
-    subtags: ['Package Mgmt', 'CLI Scripting'],
-    accent: 'text-emerald-400 group-hover:text-emerald-300',
-  },
+  { name: 'Git',          desc: 'Version Control',   Logo: GitLogo,        color: '#f97316', glow: '249,115,22',  category: 'tools'    },
+  { name: 'GitHub',       desc: 'Code Hosting',      Logo: GithubLogo,     color: '#a78bfa', glow: '167,139,250', category: 'tools'    },
+  { name: 'Vercel',       desc: 'Edge Deployment',   Logo: VercelLogo,     color: '#e2e8f0', glow: '226,232,240', category: 'tools'    },
+]
+
+const CATEGORY_META = {
+  frontend: { label: 'Frontend',       accent: '#22d3ee', rgb: '34,211,238',   num: '01' },
+  backend:  { label: 'Backend',        accent: '#a855f7', rgb: '168,85,247',   num: '02' },
+  tools:    { label: 'Tools & DevOps', accent: '#4ade80', rgb: '74,222,128',   num: '03' },
+} as const
+
+/* ═══════════════════════════════════════════════════════════
+   ANIMATED NEON CARD
+═══════════════════════════════════════════════════════════ */
+interface NeonCardProps {
+  skill: Skill
+  index: number
 }
 
-/* ─────────────────────────── Category Metadata ─────────────────────────── */
-interface CategoryConfig {
-  key: SkillCategory
-  title: string
-  tagline: string
-  icon: React.ComponentType<{ className?: string }>
-  color: string
-  borderHover: string
-  glow: string
-  headerBg: string
+const NeonCard: React.FC<NeonCardProps> = ({ skill, index }) => {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [hovered, setHovered] = useState(false)
+
+  /* 3-D tilt */
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+  const cfg    = { damping: 18, stiffness: 220, mass: 0.4 }
+  const sX     = useSpring(mouseX, cfg)
+  const sY     = useSpring(mouseY, cfg)
+  const rotX   = useTransform(sY, [-0.5, 0.5], [8, -8])
+  const rotY   = useTransform(sX, [-0.5, 0.5], [-8, 8])
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
+    const r = cardRef.current.getBoundingClientRect()
+    mouseX.set((e.clientX - r.left) / r.width  - 0.5)
+    mouseY.set((e.clientY - r.top)  / r.height - 0.5)
+  }
+  const handleLeave = () => { setHovered(false); mouseX.set(0); mouseY.set(0) }
+
+  /* Idle breathing glow box-shadow */
+  const idleShadow  = `0 0 0 1px rgba(${skill.glow},0.3), 0 0 12px rgba(${skill.glow},0.18), 0 4px 24px rgba(0,0,0,0.5)`
+  const hoverShadow = `0 0 0 1.5px rgba(${skill.glow},0.85), 0 0 20px rgba(${skill.glow},0.55), 0 0 45px rgba(${skill.glow},0.22), inset 0 0 22px rgba(${skill.glow},0.09), 0 8px 32px rgba(0,0,0,0.7)`
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 28, scale: 0.88 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.45, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
+      style={{ perspective: 900 }}
+    >
+      {/* Breathing idle glow (separate layer so it doesn't conflict with hover) */}
+      <motion.div
+        animate={{
+          boxShadow: hovered
+            ? hoverShadow
+            : [idleShadow,
+               `0 0 0 1px rgba(${skill.glow},0.45), 0 0 20px rgba(${skill.glow},0.28), 0 4px 24px rgba(0,0,0,0.5)`,
+               idleShadow],
+        }}
+        transition={hovered
+          ? { duration: 0.25, ease: 'easeOut' }
+          : { duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: index * 0.25 }
+        }
+        onMouseMove={handleMove}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={handleLeave}
+        ref={cardRef}
+        style={{
+          rotateX, rotateY,
+          transformStyle: 'preserve-3d',
+          background: hovered
+            ? `radial-gradient(circle at 50% 40%, rgba(${skill.glow},0.1) 0%, rgba(8,8,20,0.95) 70%)`
+            : 'rgba(8,8,20,0.88)',
+          border: `1px solid rgba(${skill.glow},${hovered ? '0.6' : '0.22'})`,
+          transition: 'background 0.3s ease, border-color 0.3s ease',
+        }}
+        whileHover={{ y: -5, scale: 1.03 }}
+        className="relative flex flex-col items-center gap-4 px-6 py-7 rounded-2xl
+          cursor-default overflow-hidden backdrop-blur-xl select-none"
+      >
+        {/* Top neon seam */}
+        <div
+          className="absolute top-0 inset-x-0 h-[1.5px] pointer-events-none"
+          style={{
+            background: `linear-gradient(90deg, transparent, rgba(${skill.glow},${hovered ? '0.9' : '0.5'}), transparent)`,
+            transition: 'opacity 0.3s',
+          }}
+        />
+
+        {/* Corner glow disc */}
+        <div
+          className="absolute -top-8 -right-8 w-20 h-20 rounded-full blur-2xl pointer-events-none transition-opacity duration-300"
+          style={{
+            background: `rgba(${skill.glow},0.35)`,
+            opacity: hovered ? 1 : 0.3,
+          }}
+        />
+
+        {/* Scan-line shimmer on hover */}
+        {hovered && (
+          <motion.div
+            className="absolute inset-0 pointer-events-none rounded-2xl"
+            initial={{ backgroundPosition: '-200% 0' }}
+            animate={{ backgroundPosition: '200% 0' }}
+            transition={{ duration: 0.7, ease: 'easeInOut' }}
+            style={{
+              backgroundImage: `linear-gradient(105deg, transparent 40%, rgba(${skill.glow},0.15) 50%, transparent 60%)`,
+              backgroundSize: '200% 100%',
+            }}
+          />
+        )}
+
+        {/* Hexagonal icon ring */}
+        <div className="relative" style={{ transform: 'translateZ(16px)' }}>
+          {/* Outer rotating ring */}
+          <motion.div
+            className="absolute inset-0 rounded-full"
+            animate={{ rotate: hovered ? 360 : 0 }}
+            transition={{ duration: hovered ? 4 : 0, ease: 'linear', repeat: hovered ? Infinity : 0 }}
+            style={{
+              border: `1.5px dashed rgba(${skill.glow},0.4)`,
+              margin: '-8px',
+            }}
+          />
+
+          {/* Icon container */}
+          <div
+            className="w-16 h-16 rounded-2xl flex items-center justify-center relative"
+            style={{
+              background: `radial-gradient(circle, rgba(${skill.glow},0.18) 0%, rgba(${skill.glow},0.06) 100%)`,
+              border: `1.5px solid rgba(${skill.glow},${hovered ? '0.6' : '0.3'})`,
+              boxShadow: hovered
+                ? `0 0 24px rgba(${skill.glow},0.5), inset 0 0 16px rgba(${skill.glow},0.12)`
+                : `0 0 12px rgba(${skill.glow},0.25)`,
+              transition: 'box-shadow 0.3s, border-color 0.3s',
+            }}
+          >
+            <skill.Logo size={36} />
+          </div>
+        </div>
+
+        {/* Text content */}
+        <div
+          className="flex flex-col items-center gap-1.5 text-center"
+          style={{ transform: 'translateZ(10px)' }}
+        >
+          <h3
+            className="text-base font-extrabold tracking-tight transition-colors duration-200"
+            style={{
+              color: hovered ? skill.color : '#e2e8f0',
+              textShadow: hovered ? `0 0 14px rgba(${skill.glow},0.8)` : 'none',
+            }}
+          >
+            {skill.name}
+          </h3>
+          <span
+            className="text-[11px] font-mono px-2.5 py-0.5 rounded-full"
+            style={{
+              color: skill.color,
+              background: `rgba(${skill.glow},0.1)`,
+              border: `1px solid rgba(${skill.glow},0.25)`,
+            }}
+          >
+            {skill.desc}
+          </span>
+        </div>
+
+        {/* Bottom status dot */}
+        <div className="flex items-center gap-1.5 mt-auto" style={{ transform: 'translateZ(8px)' }}>
+          <div
+            className="w-1.5 h-1.5 rounded-full"
+            style={{
+              background: skill.color,
+              boxShadow: `0 0 ${hovered ? '10px' : '5px'} rgba(${skill.glow},${hovered ? '1' : '0.7'})`,
+              transition: 'box-shadow 0.3s',
+            }}
+          />
+          <span className="text-[10px] font-mono text-neutral-500">ACTIVE</span>
+        </div>
+      </motion.div>
+    </motion.div>
+  )
 }
 
-const CATEGORY_CONFIGS: Record<SkillCategory, CategoryConfig> = {
-  Frontend: {
-    key: 'Frontend',
-    title: 'Frontend Ecosystem',
-    tagline: 'Reactive interfaces, mobile apps & 3D canvases',
-    icon: Monitor,
-    color: 'text-cyan-400',
-    borderHover: 'hover:border-cyan-500/40',
-    glow: 'from-cyan-500/20 via-sky-500/5 to-transparent',
-    headerBg: 'bg-cyan-500/10 text-cyan-300 border-cyan-500/20',
-  },
-  Backend: {
-    key: 'Backend',
-    title: 'Backend & Systems',
-    tagline: 'Scalable services, real-time WebSockets & databases',
-    icon: Server,
-    color: 'text-indigo-400',
-    borderHover: 'hover:border-indigo-500/40',
-    glow: 'from-indigo-500/20 via-purple-500/5 to-transparent',
-    headerBg: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20',
-  },
-  Tools: {
-    key: 'Tools',
-    title: 'Tools & DevOps',
-    tagline: 'Version control, automated testing & cloud hosting',
-    icon: Wrench,
-    color: 'text-emerald-400',
-    borderHover: 'hover:border-emerald-500/40',
-    glow: 'from-emerald-500/20 via-teal-500/5 to-transparent',
-    headerBg: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20',
-  },
+/* ═══════════════════════════════════════════════════════════
+   CATEGORY SECTION HEADER
+═══════════════════════════════════════════════════════════ */
+interface CatHeaderProps {
+  catKey: 'frontend' | 'backend' | 'tools'
+  index: number
 }
 
-type TabFilter = 'All' | SkillCategory
-const TABS: TabFilter[] = ['All', 'Frontend', 'Backend', 'Tools']
+const CategoryHeader: React.FC<CatHeaderProps> = ({ catKey, index }) => {
+  const meta = CATEGORY_META[catKey]
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.45, delay: index * 0.1 }}
+      className="flex items-center gap-4 mb-6"
+    >
+      {/* Number badge */}
+      <span
+        className="text-[11px] font-black font-mono tabular-nums px-2 py-1 rounded-md"
+        style={{
+          color: meta.accent,
+          background: `rgba(${meta.rgb},0.1)`,
+          border: `1px solid rgba(${meta.rgb},0.3)`,
+          textShadow: `0 0 10px rgba(${meta.rgb},0.7)`,
+        }}
+      >
+        {meta.num}
+      </span>
 
-/* ─────────────────────────── Main Skills Section ─────────────────────────── */
+      {/* Label */}
+      <h3
+        className="text-lg sm:text-xl font-extrabold tracking-widest uppercase"
+        style={{
+          color: meta.accent,
+          textShadow: `0 0 16px rgba(${meta.rgb},0.65)`,
+        }}
+      >
+        {meta.label}
+      </h3>
+
+      {/* Neon line */}
+      <div className="flex-1 h-px relative overflow-hidden">
+        <div
+          className="absolute inset-0"
+          style={{ background: `linear-gradient(90deg, rgba(${meta.rgb},0.6), transparent)` }}
+        />
+        {/* Traveling light particle */}
+        <motion.div
+          className="absolute top-0 h-full w-8"
+          animate={{ left: ['-8%', '108%'] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'linear', delay: index * 0.8 }}
+          style={{
+            background: `linear-gradient(90deg, transparent, rgba(${meta.rgb},0.9), transparent)`,
+          }}
+        />
+      </div>
+    </motion.div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MARQUEE
+═══════════════════════════════════════════════════════════ */
+const TICKER = [
+  'React 19', 'TypeScript', 'Three.js', 'Tailwind CSS', 'Vite',
+  'Laravel 13', 'Django 6', 'Node.js', 'PHP 8.3', 'MySQL',
+  'Git', 'GitHub', 'Vercel', 'Docker', 'WebSockets',
+  'Framer Motion', 'REST APIs', 'React Native', 'Mapbox GL', 'Postman',
+]
+
+const Marquee: React.FC = () => {
+  const doubled = [...TICKER, ...TICKER]
+  return (
+    <div className="relative mt-14 overflow-hidden" aria-hidden="true">
+      <div className="absolute inset-y-0 left-0 w-24 z-10 pointer-events-none bg-gradient-to-r from-[#07080e] to-transparent" />
+      <div className="absolute inset-y-0 right-0 w-24 z-10 pointer-events-none bg-gradient-to-l from-[#07080e] to-transparent" />
+      <motion.div
+        className="flex gap-3 w-max py-1"
+        animate={{ x: ['0%', '-50%'] }}
+        transition={{ duration: 32, ease: 'linear', repeat: Infinity }}
+      >
+        {doubled.map((tag, i) => (
+          <span
+            key={i}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[11px] font-mono whitespace-nowrap cursor-default"
+            style={{
+              background: 'rgba(10,10,25,0.8)',
+              border: '1px solid rgba(129,140,248,0.18)',
+              color: 'rgba(167,139,250,0.8)',
+              boxShadow: '0 0 8px rgba(129,140,248,0.07)',
+            }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full shrink-0"
+              style={{ background: '#818cf8', boxShadow: '0 0 6px rgba(129,140,248,0.9)' }}
+            />
+            #{tag}
+          </span>
+        ))}
+      </motion.div>
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MAIN SECTION
+═══════════════════════════════════════════════════════════ */
 export const Skills: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabFilter>('All')
-
-  // Categories to render based on active tab
-  const visibleCategories = useMemo(() => {
-    if (activeTab === 'All') {
-      return (['Frontend', 'Backend', 'Tools'] as SkillCategory[])
-    }
-    return [activeTab as SkillCategory]
-  }, [activeTab])
-
-  // Total counts
-  const totalCount = useMemo(() => {
-    return (
-      SKILLS_BY_CATEGORY.Frontend.length +
-      SKILLS_BY_CATEGORY.Backend.length +
-      SKILLS_BY_CATEGORY.Tools.length
-    )
-  }, [])
+  const categories = (['frontend', 'backend', 'tools'] as const)
 
   return (
     <section
       id="skills"
-      className="relative py-20 sm:py-28 lg:py-32 border-t border-neutral-800/80 bg-transparent overflow-hidden"
+      className="relative py-20 sm:py-28 lg:py-36 overflow-hidden bg-transparent border-t border-neutral-800/50"
     >
-      {/* Top Section Highlight Seam */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent pointer-events-none" />
+      {/* ── Background: ambient neon blooms ── */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Top-center: purple bloom */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full blur-[180px]"
+          style={{ background: 'radial-gradient(ellipse, rgba(168,85,247,0.09) 0%, transparent 70%)' }} />
+        {/* Left: blue bloom */}
+        <div className="absolute top-1/3 -left-40 w-[500px] h-[500px] rounded-full blur-[160px]"
+          style={{ background: 'rgba(34,211,238,0.06)' }} />
+        {/* Right: purple bloom */}
+        <div className="absolute top-2/3 -right-40 w-[500px] h-[500px] rounded-full blur-[160px]"
+          style={{ background: 'rgba(192,132,252,0.07)' }} />
+        {/* Bottom: green tint */}
+        <div className="absolute bottom-0 left-1/3 w-[400px] h-[300px] rounded-full blur-[140px]"
+          style={{ background: 'rgba(74,222,128,0.05)' }} />
+      </div>
 
-      {/* Ambient Radial Color Glows */}
-      <div className="absolute top-1/4 -left-28 w-[450px] h-[450px] rounded-full bg-indigo-600/10 blur-[130px] pointer-events-none" />
-      <div className="absolute top-2/3 -right-28 w-[450px] h-[450px] rounded-full bg-purple-600/10 blur-[140px] pointer-events-none" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#312e810a_1px,transparent_1px),linear-gradient(to_bottom,#312e810a_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_80%_65%_at_50%_50%,#000_50%,transparent_90%)] opacity-60 pointer-events-none" />
+      {/* ── Grid overlay ── */}
+      <div
+        className="absolute inset-0 opacity-[0.035] pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(129,140,248,1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(129,140,248,1) 1px, transparent 1px)
+          `,
+          backgroundSize: '52px 52px',
+          maskImage: 'radial-gradient(ellipse 85% 70% at 50% 50%, black 30%, transparent 85%)',
+        }}
+      />
+
+      {/* ── Top seam ── */}
+      <div className="absolute top-0 inset-x-0 h-px pointer-events-none"
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(168,85,247,0.4), rgba(34,211,238,0.4), transparent)' }} />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 space-y-3">
+
+        {/* ── Section heading ── */}
+        <div className="text-center max-w-2xl mx-auto mb-14 space-y-5">
+
+          {/* Eyebrow chip */}
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-500/30 bg-neutral-900/80 backdrop-blur-md shadow-[0_0_20px_rgba(99,102,241,0.12)]"
+            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full font-mono text-[11px] tracking-[0.18em] uppercase"
+            style={{
+              background: 'rgba(168,85,247,0.07)',
+              border: '1px solid rgba(168,85,247,0.35)',
+              color: '#c084fc',
+              boxShadow: '0 0 24px rgba(168,85,247,0.14)',
+            }}
           >
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-            <span className="text-xs font-mono font-medium tracking-wider text-indigo-300 uppercase">
-              Technical Capabilities // Stack Mastery
-            </span>
+            {/* Pulse dot */}
+            <motion.span
+              className="w-2 h-2 rounded-full"
+              animate={{ opacity: [1, 0.3, 1], scale: [1, 1.3, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              style={{ background: '#a855f7', boxShadow: '0 0 8px rgba(168,85,247,1)' }}
+            />
+            Tech Stack
           </motion.div>
 
+          {/* H2 */}
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 22 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight"
+            transition={{ duration: 0.65, delay: 0.1 }}
+            className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight"
           >
-            Skills, Tools &{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-300 to-purple-400">
-              Architecture
+            <span className="text-white">Skills &amp; </span>
+            <span
+              className="text-transparent bg-clip-text"
+              style={{
+                backgroundImage: 'linear-gradient(135deg, #22d3ee 0%, #a855f7 55%, #818cf8 100%)',
+                filter: 'drop-shadow(0 0 30px rgba(168,85,247,0.4))',
+              }}
+            >
+              Technologies
             </span>
           </motion.h2>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-sm sm:text-base text-neutral-300 leading-relaxed"
+            className="text-sm sm:text-base text-neutral-500 leading-relaxed max-w-lg mx-auto"
           >
-            Comprehensive toolkit spanning interactive client-side engineering, real-time backend systems, and automated deployment tooling.
+            Hand-picked tools and frameworks powering modern,
+            scalable, and immersive web experiences.
           </motion.p>
         </div>
 
-        {/* Category Filter Tabs */}
+        {/* ── 3D orbs ── */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex flex-wrap items-center justify-center gap-2 mb-10 sm:mb-12"
+          transition={{ duration: 1, delay: 0.1 }}
         >
-          <div
-            role="tablist"
-            className="p-1.5 rounded-2xl bg-neutral-900/90 border border-neutral-800/90 backdrop-blur-xl shadow-xl flex flex-wrap items-center justify-center gap-1 sm:gap-1.5"
-          >
-            {TABS.map((tab) => {
-              const isActive = activeTab === tab
-              const count =
-                tab === 'All'
-                  ? totalCount
-                  : SKILLS_BY_CATEGORY[tab as SkillCategory].length
+          <SkillsScene3D />
+        </motion.div>
 
-              return (
-                <button
-                  key={tab}
-                  role="tab"
-                  aria-selected={isActive}
-                  onClick={() => setActiveTab(tab)}
-                  className={`relative px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-colors duration-200 cursor-pointer flex items-center gap-2 ${
-                    isActive ? 'text-white' : 'text-neutral-400 hover:text-neutral-200'
+        {/* ── Skill groups ── */}
+        <div className="mt-10 space-y-12">
+          {categories.map((catKey, catIdx) => {
+            const skills = SKILLS.filter(s => s.category === catKey)
+
+            return (
+              <div key={catKey}>
+                <CategoryHeader catKey={catKey} index={catIdx} />
+
+                <div
+                  className={`grid gap-4 ${
+                    catKey === 'frontend'
+                      ? 'grid-cols-2 sm:grid-cols-4'
+                      : 'grid-cols-1 sm:grid-cols-3'
                   }`}
                 >
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeSkillsTabPill"
-                      className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 shadow-[0_0_20px_rgba(99,102,241,0.4)]"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
+                  {skills.map((skill, i) => (
+                    <NeonCard key={skill.name} skill={skill} index={i} />
+                  ))}
+                </div>
+              </div>
+            )
+          })}
+        </div>
 
-                  <span className="relative z-10 flex items-center gap-1.5">
-                    {tab === 'All' && <Layers className="w-3.5 h-3.5" />}
-                    {tab === 'Frontend' && <Monitor className="w-3.5 h-3.5" />}
-                    {tab === 'Backend' && <Server className="w-3.5 h-3.5" />}
-                    {tab === 'Tools' && <Wrench className="w-3.5 h-3.5" />}
-                    <span>{tab}</span>
-                    <span
-                      className={`text-[11px] font-mono px-1.5 py-0.2 rounded-md ${
-                        isActive
-                          ? 'bg-white/20 text-white'
-                          : 'bg-neutral-800 text-neutral-400'
-                      }`}
-                    >
-                      {count}
-                    </span>
-                  </span>
-                </button>
-              )
-            })}
-          </div>
-        </motion.div>
-
-        {/* Grouped Skills Cards Layout */}
-        <motion.div
-          layout
-          className={`grid gap-6 items-stretch ${
-            activeTab === 'All'
-              ? 'grid-cols-1 lg:grid-cols-3'
-              : 'grid-cols-1 max-w-2xl mx-auto'
-          }`}
-        >
-          <AnimatePresence mode="popLayout">
-            {visibleCategories.map((catKey, catIdx) => {
-              const config = CATEGORY_CONFIGS[catKey]
-              const skillsList = SKILLS_BY_CATEGORY[catKey]
-              const CategoryIcon = config.icon
-
-              return (
-                <motion.div
-                  key={catKey}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.45, delay: catIdx * 0.08 }}
-                  className={`relative flex flex-col justify-between rounded-2xl bg-[#0c0d14]/90 border border-neutral-800/80 ${config.borderHover} backdrop-blur-xl shadow-xl hover:shadow-[0_16px_40px_rgba(0,0,0,0.6)] transition-all duration-300 overflow-hidden`}
-                >
-                  {/* Subtle Top Accent Gradient Line */}
-                  <div
-                    className={`absolute top-0 inset-x-0 h-px bg-gradient-to-r ${config.glow}`}
-                  />
-
-                  {/* Card Header */}
-                  <div className="p-5 pb-4 border-b border-neutral-800/60 bg-neutral-950/40">
-                    <div className="flex items-center justify-between gap-3 mb-2">
-                      <div className="flex items-center gap-2.5">
-                        <div
-                          className={`w-9 h-9 rounded-xl flex items-center justify-center border ${config.headerBg}`}
-                        >
-                          <CategoryIcon className="w-4.5 h-4.5" />
-                        </div>
-                        <div>
-                          <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
-                            {config.title}
-                          </h3>
-                        </div>
-                      </div>
-
-                      <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400">
-                        {skillsList.length} Technologies
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-neutral-400 leading-relaxed">
-                      {config.tagline}
-                    </p>
-                  </div>
-
-                  {/* Skills List Items */}
-                  <div className="p-4 sm:p-5 flex flex-col gap-2.5 flex-1 justify-start">
-                    {skillsList.map((skill: Skill) => {
-                      const details = SKILL_DETAILS[skill.name] || {
-                        icon: Code2,
-                        subtags: ['Core Tech'],
-                        accent: 'text-neutral-300',
-                      }
-                      const SkillIcon = details.icon
-
-                      return (
-                        <div
-                          key={skill.name}
-                          className="group relative p-3 rounded-xl bg-neutral-950/70 hover:bg-neutral-900/90 border border-neutral-800/80 hover:border-neutral-700/80 transition-all duration-200"
-                        >
-                          <div className="flex items-center justify-between gap-3 mb-2">
-                            {/* Icon & Title */}
-                            <div className="flex items-center gap-2.5 min-w-0">
-                              <div className="w-7 h-7 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center shrink-0 group-hover:border-neutral-700 transition-colors">
-                                <SkillIcon className={`w-3.5 h-3.5 ${details.accent}`} />
-                              </div>
-                              <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-indigo-200 transition-colors truncate">
-                                {skill.name}
-                              </span>
-                            </div>
-
-                            {/* Level Percentage Tag */}
-                            <span className="text-[11px] font-mono font-medium text-neutral-400 group-hover:text-indigo-300 transition-colors shrink-0">
-                              {skill.level}%
-                            </span>
-                          </div>
-
-                          {/* Progress Meter Bar */}
-                          <div className="w-full h-1 bg-neutral-900 rounded-full overflow-hidden mb-2">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              whileInView={{ width: `${skill.level}%` }}
-                              viewport={{ once: true }}
-                              transition={{ duration: 0.8, ease: 'easeOut', delay: 0.1 }}
-                              className={`h-full rounded-full bg-gradient-to-r ${
-                                catKey === 'Frontend'
-                                  ? 'from-cyan-500 to-sky-400'
-                                  : catKey === 'Backend'
-                                  ? 'from-indigo-500 to-purple-400'
-                                  : 'from-emerald-500 to-teal-400'
-                              }`}
-                            />
-                          </div>
-
-                          {/* Subtags / Micro Tech Keywords */}
-                          <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-                            {details.subtags.map((tag) => (
-                              <span
-                                key={tag}
-                                className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-neutral-900/80 border border-neutral-800/80 text-neutral-400 group-hover:text-neutral-300 group-hover:border-neutral-700/60 transition-colors"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-
-                  {/* Card Bottom Micro Banner */}
-                  <div className="p-3.5 px-5 bg-neutral-950/60 border-t border-neutral-800/60 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1.5 font-mono text-neutral-400">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Production Ready</span>
-                    </span>
-                    <span className="font-mono text-neutral-400">
-                      High Confidence
-                    </span>
-                  </div>
-                </motion.div>
-              )
-            })}
-          </AnimatePresence>
-        </motion.div>
-
-        {/* Compact Architecture Keywords Ticker */}
+        {/* ── Bottom summary strip ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-12 text-center"
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mt-14 flex flex-wrap justify-center items-center gap-6 sm:gap-12"
         >
-          <div className="p-4 sm:p-5 rounded-2xl bg-neutral-900/60 border border-neutral-800/80 backdrop-blur-md shadow-lg max-w-4xl mx-auto space-y-3">
-            <div className="flex items-center justify-center gap-2 text-xs font-mono text-indigo-300">
-              <Terminal className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Full-Stack & Real-Time Keywords</span>
+          {[
+            { n: '4', label: 'Frontend',  c: '#22d3ee', g: '34,211,238'  },
+            { n: '3', label: 'Backend',   c: '#a855f7', g: '168,85,247'  },
+            { n: '3', label: 'Tools',     c: '#4ade80', g: '74,222,128'  },
+            { n: '3+', label: 'Years Exp', c: '#f59e0b', g: '245,158,11' },
+          ].map(({ n, label, c, g }) => (
+            <div key={label} className="flex flex-col items-center gap-1">
+              <span
+                className="text-4xl font-black tabular-nums"
+                style={{ color: c, textShadow: `0 0 20px rgba(${g},0.7)` }}
+              >
+                {n}
+              </span>
+              <span className="text-[11px] font-mono uppercase tracking-widest text-neutral-500">
+                {label}
+              </span>
             </div>
-
-            <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
-              {[
-                'React 19',
-                'Laravel 13',
-                'TypeScript',
-                'Laravel Reverb',
-                'Django REST',
-                'WebSockets',
-                'Tailwind CSS',
-                'MySQL Optimization',
-                'Sanctum RBAC',
-                'Mapbox GL GIS',
-                'Vite HMR',
-                'Framer Motion',
-                'RESTful APIs',
-              ].map((keyword) => (
-                <span
-                  key={keyword}
-                  className="px-2.5 py-1 rounded-full text-xs font-mono bg-neutral-950/70 border border-neutral-800/80 text-neutral-300 hover:border-indigo-500/50 hover:text-white transition-all cursor-default"
-                >
-                  #{keyword}
-                </span>
-              ))}
-            </div>
-          </div>
+          ))}
         </motion.div>
+
+        {/* ── Marquee ── */}
+        <Marquee />
       </div>
     </section>
   )
