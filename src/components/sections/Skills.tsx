@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { SkillsScene3D } from './skills/SkillsScene3D'
 
 /* ═══════════════════════════════════════════════════════════
    BRAND SVG ICONS  (inline, no dep)
@@ -221,7 +220,7 @@ const NeonCard: React.FC<NeonCardProps> = ({ skill, index }) => {
           transition: 'background 0.3s ease, border-color 0.3s ease',
         }}
         whileHover={{ y: -5, scale: 1.03 }}
-        className="relative flex flex-col items-center gap-4 px-6 py-7 rounded-2xl
+        className="relative flex items-center gap-4 px-4 py-4 rounded-xl
           cursor-default overflow-hidden backdrop-blur-xl select-none"
       >
         {/* Top neon seam */}
@@ -256,8 +255,8 @@ const NeonCard: React.FC<NeonCardProps> = ({ skill, index }) => {
           />
         )}
 
-        {/* Hexagonal icon ring */}
-        <div className="relative" style={{ transform: 'translateZ(16px)' }}>
+        {/* Icon ring */}
+        <div className="relative shrink-0" style={{ transform: 'translateZ(16px)' }}>
           {/* Outer rotating ring */}
           <motion.div
             className="absolute inset-0 rounded-full"
@@ -265,63 +264,61 @@ const NeonCard: React.FC<NeonCardProps> = ({ skill, index }) => {
             transition={{ duration: hovered ? 4 : 0, ease: 'linear', repeat: hovered ? Infinity : 0 }}
             style={{
               border: `1.5px dashed rgba(${skill.glow},0.4)`,
-              margin: '-8px',
+              margin: '-6px',
             }}
           />
 
           {/* Icon container */}
           <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center relative"
+            className="w-12 h-12 rounded-xl flex items-center justify-center relative"
             style={{
               background: `radial-gradient(circle, rgba(${skill.glow},0.18) 0%, rgba(${skill.glow},0.06) 100%)`,
               border: `1.5px solid rgba(${skill.glow},${hovered ? '0.6' : '0.3'})`,
               boxShadow: hovered
-                ? `0 0 24px rgba(${skill.glow},0.5), inset 0 0 16px rgba(${skill.glow},0.12)`
-                : `0 0 12px rgba(${skill.glow},0.25)`,
+                ? `0 0 18px rgba(${skill.glow},0.5), inset 0 0 12px rgba(${skill.glow},0.12)`
+                : `0 0 8px rgba(${skill.glow},0.25)`,
               transition: 'box-shadow 0.3s, border-color 0.3s',
             }}
           >
-            <skill.Logo size={36} />
+            <skill.Logo size={26} />
           </div>
         </div>
 
-        {/* Text content */}
+        {/* Text content — now in a row layout */}
         <div
-          className="flex flex-col items-center gap-1.5 text-center"
+          className="flex flex-col gap-0.5 min-w-0 flex-1"
           style={{ transform: 'translateZ(10px)' }}
         >
-          <h3
-            className="text-base font-extrabold tracking-tight transition-colors duration-200"
-            style={{
-              color: hovered ? skill.color : '#e2e8f0',
-              textShadow: hovered ? `0 0 14px rgba(${skill.glow},0.8)` : 'none',
-            }}
-          >
-            {skill.name}
-          </h3>
+          <div className="flex items-center gap-2">
+            <h3
+              className="text-[13px] font-extrabold tracking-tight transition-colors duration-200 truncate"
+              style={{
+                color: hovered ? skill.color : '#e2e8f0',
+                textShadow: hovered ? `0 0 12px rgba(${skill.glow},0.8)` : 'none',
+              }}
+            >
+              {skill.name}
+            </h3>
+            {/* Status dot */}
+            <div
+              className="w-1.5 h-1.5 rounded-full shrink-0"
+              style={{
+                background: skill.color,
+                boxShadow: `0 0 ${hovered ? '8px' : '4px'} rgba(${skill.glow},${hovered ? '1' : '0.6'})`,
+                transition: 'box-shadow 0.3s',
+              }}
+            />
+          </div>
           <span
-            className="text-[11px] font-mono px-2.5 py-0.5 rounded-full"
+            className="text-[10px] font-mono px-2 py-0.5 rounded-full w-fit"
             style={{
               color: skill.color,
               background: `rgba(${skill.glow},0.1)`,
-              border: `1px solid rgba(${skill.glow},0.25)`,
+              border: `1px solid rgba(${skill.glow},0.22)`,
             }}
           >
             {skill.desc}
           </span>
-        </div>
-
-        {/* Bottom status dot */}
-        <div className="flex items-center gap-1.5 mt-auto" style={{ transform: 'translateZ(8px)' }}>
-          <div
-            className="w-1.5 h-1.5 rounded-full"
-            style={{
-              background: skill.color,
-              boxShadow: `0 0 ${hovered ? '10px' : '5px'} rgba(${skill.glow},${hovered ? '1' : '0.7'})`,
-              transition: 'box-shadow 0.3s',
-            }}
-          />
-          <span className="text-[10px] font-mono text-neutral-500">ACTIVE</span>
         </div>
       </motion.div>
     </motion.div>
@@ -344,7 +341,7 @@ const CategoryHeader: React.FC<CatHeaderProps> = ({ catKey, index }) => {
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.45, delay: index * 0.1 }}
-      className="flex items-center gap-4 mb-6"
+      className="flex items-center gap-3 mb-4"
     >
       {/* Number badge */}
       <span
@@ -403,7 +400,7 @@ const TICKER = [
 const Marquee: React.FC = () => {
   const doubled = [...TICKER, ...TICKER]
   return (
-    <div className="relative mt-14 overflow-hidden" aria-hidden="true">
+    <div className="relative mt-8 overflow-hidden" aria-hidden="true">
       <div className="absolute inset-y-0 left-0 w-24 z-10 pointer-events-none bg-gradient-to-r from-[#07080e] to-transparent" />
       <div className="absolute inset-y-0 right-0 w-24 z-10 pointer-events-none bg-gradient-to-l from-[#07080e] to-transparent" />
       <motion.div
@@ -443,7 +440,7 @@ export const Skills: React.FC = () => {
   return (
     <section
       id="skills"
-      className="relative py-20 sm:py-28 lg:py-36 overflow-hidden bg-transparent border-t border-neutral-800/50"
+      className="relative py-14 sm:py-20 overflow-hidden bg-transparent border-t border-neutral-800/50"
     >
       {/* ── Background: ambient neon blooms ── */}
       <div className="absolute inset-0 pointer-events-none">
@@ -481,7 +478,7 @@ export const Skills: React.FC = () => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
 
         {/* ── Section heading ── */}
-        <div className="text-center max-w-2xl mx-auto mb-14 space-y-5">
+        <div className="text-center max-w-2xl mx-auto mb-8 space-y-3">
 
           {/* Eyebrow chip */}
           <motion.div
@@ -513,7 +510,7 @@ export const Skills: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.65, delay: 0.1 }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight"
+            className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight"
           >
             <span className="text-white">Skills &amp; </span>
             <span
@@ -539,18 +536,8 @@ export const Skills: React.FC = () => {
           </motion.p>
         </div>
 
-        {/* ── 3D orbs ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.1 }}
-        >
-          <SkillsScene3D />
-        </motion.div>
-
         {/* ── Skill groups ── */}
-        <div className="mt-10 space-y-12">
+        <div className="space-y-6">
           {categories.map((catKey, catIdx) => {
             const skills = SKILLS.filter(s => s.category === catKey)
 
@@ -573,34 +560,6 @@ export const Skills: React.FC = () => {
             )
           })}
         </div>
-
-        {/* ── Bottom summary strip ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-14 flex flex-wrap justify-center items-center gap-6 sm:gap-12"
-        >
-          {[
-            { n: '4', label: 'Frontend',  c: '#22d3ee', g: '34,211,238'  },
-            { n: '3', label: 'Backend',   c: '#a855f7', g: '168,85,247'  },
-            { n: '3', label: 'Tools',     c: '#4ade80', g: '74,222,128'  },
-            { n: '3+', label: 'Years Exp', c: '#f59e0b', g: '245,158,11' },
-          ].map(({ n, label, c, g }) => (
-            <div key={label} className="flex flex-col items-center gap-1">
-              <span
-                className="text-4xl font-black tabular-nums"
-                style={{ color: c, textShadow: `0 0 20px rgba(${g},0.7)` }}
-              >
-                {n}
-              </span>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-neutral-500">
-                {label}
-              </span>
-            </div>
-          ))}
-        </motion.div>
 
         {/* ── Marquee ── */}
         <Marquee />
