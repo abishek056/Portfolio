@@ -1,191 +1,159 @@
-# 🌌 Abishek Adhikari — 3D Interactive Portfolio
+<h1 align="center">Abishek Adhikari — Portfolio</h1>
 
-[![React](https://img.shields.io/badge/React-19.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-6.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-8.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev/)
-[![Three.js](https://img.shields.io/badge/Three.js-0.186-000000?style=for-the-badge&logo=three.js&logoColor=white)](https://threejs.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Framer Motion](https://img.shields.io/badge/Framer_Motion-13.x-FF0055?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
-[![Deployed on Vercel](https://img.shields.io/badge/Vercel-Deployment_Ready-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+<p align="center">
+  <strong>Interactive 3D developer portfolio built with React 19, Three.js, and Vite</strong><br/>
+  <a href="https://portfolio-abishek056s-projects.vercel.app" target="_blank">🌐 Live Demo</a> &nbsp;·&nbsp;
+  <a href="https://github.com/abishek056/Portfolio-" target="_blank">GitHub</a> &nbsp;·&nbsp;
+  <a href="mailto:abishekadhikari056@gmail.com">Contact</a>
+</p>
 
-> A cutting-edge, interactive 3D developer portfolio showcasing full-stack web platforms, real-time WebSocket systems, and modern frontend engineering. Built with React 19, Three.js, React Three Fiber, Tailwind CSS v4, and Framer Motion.
-
----
-
-## 🚀 Overview
-
-This portfolio is crafted to demonstrate modern frontend engineering with high-performance WebGL animations, silky smooth 3D interactions, and responsive design across all devices. It showcases featured projects such as real-time emergency healthcare dispatchers, role-based complaint management systems, and e-commerce storefronts.
-
-### 🌟 Key Highlights
-- **WebGL 3D Core with React Three Fiber**: Interactive 3D hero center with dynamic geometry deformation (`MeshDistortMaterial`), orbit rings, and floating polyhedral satellites responding to cursor motion.
-- **Smart GPU Performance Optimization**: Dynamic viewport intersection tracking (`IntersectionObserver`) pauses canvas rendering loops (`frameloop="never"`) when out of view, reducing GPU load to 0% during section scrolling.
-- **Buttery 3D Card Physics**: Specular glare sheen and tilt effects powered by Framer Motion springs, auto-disabled on touch devices for fluid mobile scrolling.
-- **Sleek Cyber Glassmorphism**: Tailored HSL dark color palette (`#07080e`), backdrop blur filters, custom glow effects, and modern JetBrains Mono / Inter typography.
-- **Smooth Loading Screen**: Cyberpunk-style loader with progress states and seamless entry animations into the 3D scene.
-- **Vercel Edge Ready**: Automated SPA routing, immutable asset caching headers, and optimized chunk splitting configured out of the box.
+<p align="center">
+  <img alt="React" src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white&style=flat-square"/>
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white&style=flat-square"/>
+  <img alt="Three.js" src="https://img.shields.io/badge/Three.js-0.186-black?logo=threedotjs&logoColor=white&style=flat-square"/>
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white&style=flat-square"/>
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white&style=flat-square"/>
+  <img alt="Deployed on Vercel" src="https://img.shields.io/badge/Deployed-Vercel-black?logo=vercel&logoColor=white&style=flat-square"/>
+</p>
 
 ---
 
-## 🛠️ Tech Stack
+## 📖 Description
 
-| Domain | Technologies |
-| :--- | :--- |
-| **Core Framework** | [React 19](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [Vite 8](https://vite.dev/) |
-| **3D & Visual Effects** | [Three.js](https://threejs.org/), [@react-three/fiber](https://docs.pmnd.rs/react-three-fiber), [@react-three/drei](https://github.com/pmndrs/drei) |
-| **Styling & Design System** | [Tailwind CSS v4](https://tailwindcss.com/), Vanilla CSS utilities, Glassmorphism, Google Fonts (`Inter`, `JetBrains Mono`) |
-| **Animations & Gestures** | [Framer Motion 13](https://www.framer.com/motion/) (Physics springs, scroll triggers, layout animations) |
-| **Icons** | [Lucide React](https://lucide.dev/) |
-| **Hosting & CI/CD** | [Vercel](https://vercel.com/) Edge Network |
+A high-performance, fully responsive personal portfolio showcasing my work as a Full-Stack Developer. The site features an immersive WebGL hero scene built with React Three Fiber — complete with animated wireframe crystal geometries, pointer-driven parallax, and smooth Framer Motion transitions throughout every section.
 
 ---
 
 ## ✨ Features
 
-- **Interactive 3D Hero Scene**: Real-time Raycaster cursor tracking, animated distort core, floating geometry satellites, and celestial particle starfields.
-- **Interactive Skills Orbit**: 3D floating skill orbs representing React, Laravel, Django, TypeScript, MySQL, and DevOps tools with real-time mouse parallax.
-- **Interactive 3D Project Cards**: 3D hover tilt with dynamic glare lighting, macOS-style window frames, technology tag badges, and live demo / GitHub links.
-- **Category Filtering**: Instant animated category switches across Full-Stack, Frontend, and Backend architectures.
-- **Interactive Contact Form & Live Canvas**: Floating vector shapes canvas with automatic pause when scrolled out of view, coupled with validation and feedback states.
-- **Custom Scrollbar & Selection**: Custom neon-indigo glow scrollbar and text selection styling.
-- **Mobile First & Responsive**: Optimized for phones, tablets, and 4K displays with touch detection and capped DPR (`1.5x`).
-- **Complete SEO & Social Sharing**: Pre-configured Open Graph tags, Twitter Cards, robots meta, and semantic HTML5 hierarchy.
+- **WebGL 3D Hero Scene** — Floating wireframe crystal geometries (icosahedron, dodecahedron, octahedron, tetrahedron) powered by React Three Fiber with real-time pointer parallax
+- **Framer Motion Animations** — Spring-physics micro-interactions, scroll-triggered reveals, and staggered entry animations across all sections
+- **Filterable Projects Grid** — Browse showcased projects by category (Full-Stack, Frontend, Backend) with live/GitHub links
+- **Animated Skill Bars** — Categorised skill proficiency visualised with smooth fill animations
+- **Dark-Mode First Design** — Deep dark aesthetic (`#07080e` base) with an indigo/violet/cyan accent palette
+- **Fully Responsive** — Mobile-optimised layout; 3D scene adapts by removing geometry on small viewports
+- **Performance Optimised** — Intersection Observer–driven Canvas pause, `dpr` capping, and Vite code splitting
+- **SEO Ready** — Full Open Graph and Twitter Card meta tags, semantic HTML, and a `robots` directive
+- **Security Headers** — `vercel.json` ships `X-Frame-Options`, `X-XSS-Protection`, `X-Content-Type-Options`, and `Referrer-Policy` out of the box
 
 ---
 
-## 📁 Project Structure
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Framework** | [React 19](https://react.dev) + [Vite 8](https://vitejs.dev) |
+| **Language** | [TypeScript 6](https://www.typescriptlang.org) |
+| **3D / WebGL** | [Three.js](https://threejs.org) · [React Three Fiber](https://docs.pmnd.rs/react-three-fiber) · [@react-three/drei](https://github.com/pmndrs/drei) |
+| **Animation** | [Framer Motion 13](https://www.framer.com/motion/) |
+| **Styling** | [Tailwind CSS 4](https://tailwindcss.com) |
+| **Icons** | [Lucide React](https://lucide.dev) |
+| **Linting** | ESLint 10 + Prettier 3 |
+| **Deployment** | [Vercel](https://vercel.com) |
+
+---
+
+## 📂 Project Structure
+
+```
+Portfolio/
+├── public/                 # Static assets (favicon, images)
+├── src/
+│   ├── assets/             # Project screenshots and media
+│   ├── components/
+│   │   ├── 3d/             # Three.js / R3F scenes (HeroScene, CanvasPlaceholder)
+│   │   ├── layout/         # Navbar, Footer
+│   │   ├── sections/       # Hero, About, Projects, Skills, Contact
+│   │   └── ui/             # Reusable UI primitives
+│   ├── data/
+│   │   └── portfolio.ts    # Centralised content (personal info, projects, skills)
+│   ├── hooks/              # Custom React hooks
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── index.html
+├── vercel.json             # Vercel SPA rewrites & security headers
+├── vite.config.ts
+└── tsconfig.json
+```
+
+> **Tip:** All site content — personal info, projects, and skills — lives in `src/data/portfolio.ts`. Edit that single file to personalise the entire site.
+
+---
+
+## 🚀 Running Locally
+
+### Prerequisites
+
+- **Node.js** ≥ 18
+- **npm** ≥ 9
+
+### Steps
 
 ```bash
-Portfolio/
-├── public/                     # Static public assets (icons, favicon, project previews)
-│   ├── favicon.svg             # Neon portfolio favicon
-│   └── projects/               # Showcase project screenshots
-├── src/
-│   ├── assets/                 # Bundled images and vectors
-│   ├── components/
-│   │   ├── 3d/                 # Three.js / React Three Fiber canvases
-│   │   │   ├── HeroScene.tsx   # Interactive Hero 3D core & satellites
-│   │   │   └── CanvasPlaceholder.tsx
-│   │   ├── layout/             # Layout primitives
-│   │   │   ├── Navbar.tsx      # Fixed glassmorphic navigation bar
-│   │   │   └── Footer.tsx      # Social links & back-to-top button
-│   │   ├── sections/           # Major portfolio sections
-│   │   │   ├── Home.tsx        # Home hero entrance & call-to-actions
-│   │   │   ├── About.tsx       # Bio, pillars & profile tilt card
-│   │   │   ├── Projects.tsx    # Showcase gallery with filters
-│   │   │   ├── Skills.tsx      # Categorized skill bars & 3D orbit
-│   │   │   ├── Contact.tsx     # Message dispatch form & canvas
-│   │   │   ├── about/          # About section background accents
-│   │   │   ├── projects/       # Project 3D cards & backgrounds
-│   │   │   └── skills/         # Skill 3D cards & orbit scene
-│   │   └── ui/                 # Reusable UI components
-│   │       ├── Button.tsx      # Neon action buttons
-│   │       ├── Card.tsx        # Glass card wrapper
-│   │       └── LoadingScreen.tsx # Cyber initialization loader
-│   ├── data/
-│   │   └── portfolio.ts        # Typed portfolio information & project data
-│   ├── App.tsx                 # Root application component
-│   ├── index.css               # Design system tokens, scrollbar & selection
-│   └── main.tsx                # React DOM mount point
-├── vercel.json                 # Vercel SPA routing & cache headers
-├── vite.config.ts              # Code splitting, chunk limits & Tailwind v4
-└── package.json                # Dependencies and build scripts
+# 1. Clone the repository
+git clone https://github.com/abishek056/Portfolio-.git
+cd Portfolio-
+
+# 2. Install dependencies
+npm install
+
+# 3. Start the development server
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser. The page hot-reloads on every save.
+
+### Other useful scripts
+
+```bash
+npm run build     # Type-check + production build → dist/
+npm run preview   # Locally preview the production build
+npm run lint      # Run ESLint across the codebase
 ```
 
 ---
 
-## 💻 How to Run Locally
+## ☁️ Deploying on Vercel
 
-### Prerequisites
-- [Node.js](https://nodejs.org/) (version `18.x` or higher recommended)
-- [npm](https://www.npmjs.com/) or [pnpm](https://pnpm.io/)
+The project includes a `vercel.json` that handles SPA client-side routing rewrites and security headers automatically.
 
-### Steps
+### Option A — Vercel Dashboard (recommended)
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/abishek056/Portfolio.git
-   cd Portfolio
-   ```
+1. Push your code to GitHub.
+2. Go to [vercel.com/new](https://vercel.com/new) and import the repository.
+3. Vercel auto-detects **Vite** — no additional configuration needed.
+4. Click **Deploy**.
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+### Option B — Vercel CLI
 
-3. **Start the local development server:**
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:5173](http://localhost:5173) in your browser to view the application with Hot Module Replacement (HMR).
+```bash
+# Install the CLI globally (once)
+npm install -g vercel
 
-4. **Verify TypeScript & Build:**
-   ```bash
-   npm run build
-   ```
+# Login
+vercel login
 
-5. **Preview the production bundle locally:**
-   ```bash
-   npm run preview
-   ```
+# Deploy (follow the prompts; framework will be auto-detected as Vite)
+vercel
 
----
+# Promote to production
+vercel --prod
+```
 
-## 🌐 How to Deploy on Vercel
+### Environment variables
 
-This repository is pre-configured for zero-config Vercel deployment with `vercel.json` included.
-
-### Option A: Via Vercel Dashboard (Recommended)
-
-1. Push your repository to [GitHub](https://github.com/).
-2. Navigate to [vercel.com](https://vercel.com/) and sign in.
-3. Click **"Add New..."** → **"Project"**.
-4. Import your `Portfolio` repository.
-5. In **Build and Output Settings**:
-   - **Framework Preset**: `Vite`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-   - **Install Command**: `npm install`
-6. Click **Deploy**. Your portfolio will be live in seconds with an SSL certificate and global CDN edge routing!
-
-### Option B: Via Vercel CLI
-
-1. Install the Vercel CLI globally:
-   ```bash
-   npm install -g vercel
-   ```
-
-2. Log in and deploy:
-   ```bash
-   vercel
-   ```
-
-3. For production release:
-   ```bash
-   vercel --prod
-   ```
-
----
-
-## ⚡ Performance Optimizations
-
-- **Smart Frameloop Pausing**: When the user scrolls past the 3D Hero or Skills sections, an `IntersectionObserver` halts the render loop (`frameloop="never"`), dropping GPU utilization to 0%.
-- **DPR Throttling**: Device pixel ratio is capped between `1` and `1.5` (`dpr={[1, 1.5]}`), preventing mobile GPUs from rendering excessive pixel fragments on 3x / 4x Retina screens.
-- **Rollup Vendor Splitting**: Vendor dependencies are split into independent HTTP/2 chunks (`three-vendor`, `motion-vendor`, `lucide-icons`), accelerating First Contentful Paint (FCP) and Largest Contentful Paint (LCP).
-- **GPU Accelerated Transitions**: CSS and Framer Motion transforms utilize `transform-gpu` and `will-change` hints for compositing off the main thread.
-- **Touch Device Protection**: Mouse tilt calculations are gracefully bypassed on touch screens (`pointer: coarse`), preserving smooth native kinetic scrolling on mobile phones.
-
----
-
-## 👤 Author
-
-**Abishek Adhikari**
-- **Role**: Full-Stack Developer & Software Engineer
-- **GitHub**: [@abishek056](https://github.com/abishek056)
-- **Email**: [abishekadhikari056@gmail.com](mailto:abishekadhikari056@gmail.com)
+This project has no required environment variables for the basic build. If you extend the site with a contact-form API or analytics, add them via the Vercel Dashboard under **Settings → Environment Variables**.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — feel free to use it as inspiration for your own portfolio.
+This project is open-source under the [MIT License](./LICENSE).
+Feel free to fork, adapt, and use it as inspiration for your own portfolio — attribution is appreciated but not required.
+
+---
+
+<p align="center">
+  Built with ❤️ by <a href="https://github.com/abishek056">Abishek Adhikari</a> · Nepal 🇳🇵
+</p>
