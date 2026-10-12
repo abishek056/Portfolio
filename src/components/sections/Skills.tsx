@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { SkillsScene3D } from './skills/SkillsScene3D'
 
@@ -171,8 +171,8 @@ const NeonCard: React.FC<NeonCardProps> = ({ skill, index }) => {
   const cfg    = { damping: 18, stiffness: 220, mass: 0.4 }
   const sX     = useSpring(mouseX, cfg)
   const sY     = useSpring(mouseY, cfg)
-  const rotX   = useTransform(sY, [-0.5, 0.5], [8, -8])
-  const rotY   = useTransform(sX, [-0.5, 0.5], [-8, 8])
+  const rotateX = useTransform(sY, [-0.5, 0.5], [8, -8])
+  const rotateY = useTransform(sX, [-0.5, 0.5], [-8, 8])
 
   const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return
