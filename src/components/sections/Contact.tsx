@@ -9,10 +9,10 @@ import {
   Sparkles,
   ArrowUpRight,
   MessageSquare,
-  Clock,
   Sparkle,
 } from 'lucide-react'
 import { PERSONAL_INFO } from '../../data/portfolio'
+import profileImg from '../../assets/image/home/card.jpg'
 
 /* ─────────────────────────── Spider-Web / Particle Canvas ─────────────────────────── */
 interface NodeParticle {
@@ -47,10 +47,11 @@ const SpiderWebCanvas: React.FC = () => {
     let height = 0
     let particles: NodeParticle[] = []
 
+    // Purple / Violet / Indigo theme
     const colors = [
+      'rgba(168, 85, 247, ', // Purple
+      'rgba(192, 132, 252, ', // Lavender / Violet
       'rgba(129, 140, 248, ', // Indigo
-      'rgba(56, 189, 248, ',  // Sky / Cyan
-      'rgba(192, 132, 252, ', // Purple
     ]
 
     const initParticles = () => {
@@ -64,7 +65,7 @@ const SpiderWebCanvas: React.FC = () => {
       canvas.style.height = `${height}px`
       ctx.scale(dpr, dpr)
 
-      const count = width < 640 ? 22 : width < 1024 ? 34 : 44
+      const count = width < 640 ? 20 : width < 1024 ? 32 : 42
       particles = []
 
       for (let i = 0; i < count; i++) {
@@ -149,7 +150,7 @@ const SpiderWebCanvas: React.FC = () => {
             ctx.beginPath()
             ctx.moveTo(p1.x, p1.y)
             ctx.lineTo(p2.x, p2.y)
-            ctx.strokeStyle = `rgba(129, 140, 248, ${alpha})`
+            ctx.strokeStyle = `rgba(168, 85, 247, ${alpha})`
             ctx.lineWidth = 0.75
             ctx.stroke()
           }
@@ -166,7 +167,7 @@ const SpiderWebCanvas: React.FC = () => {
             ctx.beginPath()
             ctx.moveTo(p1.x, p1.y)
             ctx.lineTo(mouse.x, mouse.y)
-            ctx.strokeStyle = `rgba(168, 85, 247, ${mAlpha})`
+            ctx.strokeStyle = `rgba(192, 132, 252, ${mAlpha})`
             ctx.lineWidth = 0.95
             ctx.stroke()
 
@@ -218,7 +219,6 @@ const SpiderWebCanvas: React.FC = () => {
 const SOCIALS = [
   {
     name: 'GitHub',
-    handle: '@abishek056',
     href: PERSONAL_INFO.github,
     icon: (
       <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -229,51 +229,44 @@ const SOCIALS = [
         />
       </svg>
     ),
-    badge: 'Code',
-    accent: 'hover:border-neutral-500 hover:text-white hover:bg-neutral-800/80 hover:shadow-[0_0_15px_rgba(255,255,255,0.12)]',
+    hoverClass: 'hover:border-purple-400/60 hover:text-white hover:bg-purple-500/15 hover:shadow-[0_0_16px_rgba(168,85,247,0.3)]',
   },
   {
     name: 'LinkedIn',
-    handle: 'Abishek Adhikari',
     href: PERSONAL_INFO.linkedin,
     icon: (
       <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
         <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
       </svg>
     ),
-    badge: 'Network',
-    accent: 'hover:border-sky-500/50 hover:text-sky-400 hover:bg-sky-500/10 hover:shadow-[0_0_15px_rgba(14,165,233,0.2)]',
+    hoverClass: 'hover:border-purple-400/60 hover:text-purple-300 hover:bg-purple-500/15 hover:shadow-[0_0_16px_rgba(168,85,247,0.3)]',
   },
   {
     name: 'Facebook',
-    handle: 'abishek.adhikari',
     href: PERSONAL_INFO.facebook,
     icon: (
       <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
         <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z" />
       </svg>
     ),
-    badge: 'Social',
-    accent: 'hover:border-blue-500/50 hover:text-blue-400 hover:bg-blue-500/10 hover:shadow-[0_0_15px_rgba(59,130,246,0.2)]',
+    hoverClass: 'hover:border-purple-400/60 hover:text-purple-300 hover:bg-purple-500/15 hover:shadow-[0_0_16px_rgba(168,85,247,0.3)]',
   },
   {
     name: 'X (Twitter)',
-    handle: '@abishek_dev',
     href: 'https://twitter.com',
     icon: (
       <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
       </svg>
     ),
-    badge: 'Feed',
-    accent: 'hover:border-neutral-400 hover:text-neutral-100 hover:bg-neutral-800/80 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]',
+    hoverClass: 'hover:border-purple-400/60 hover:text-white hover:bg-purple-500/15 hover:shadow-[0_0_16px_rgba(168,85,247,0.3)]',
   },
 ]
 
 /* ─────────────────────────── Main Contact Component ─────────────────────────── */
 export const Contact: React.FC = () => {
   const [formState, setFormState] = useState<'idle' | 'loading' | 'success'>('idle')
-  const [values, setValues] = useState({ name: '', email: '', message: '' })
+  const [values, setValues] = useState({ name: '', email: '', subject: '', message: '' })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -281,7 +274,7 @@ export const Contact: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!values.name.trim() || !values.email.trim() || !values.message.trim()) return
+    if (!values.name.trim() || !values.email.trim() || !values.subject.trim() || !values.message.trim()) return
 
     setFormState('loading')
     // Smooth simulated dispatch (ready for EmailJS, Formspree or custom API)
@@ -292,28 +285,29 @@ export const Contact: React.FC = () => {
   return (
     <section
       id="contact"
-      className="relative min-h-[calc(100vh-4.5rem)] py-8 sm:py-12 lg:py-16 border-t border-neutral-800/70 bg-[#07080e] overflow-hidden flex flex-col justify-center"
+      className="relative min-h-[calc(100vh-4.5rem)] py-6 sm:py-10 lg:py-12 border-t border-neutral-800/70 bg-[#07080e] overflow-hidden flex flex-col justify-center"
     >
       {/* Spider-Web & Particle Canvas Background */}
       <SpiderWebCanvas />
 
-      {/* Atmospheric Ambient Radial Glows */}
-      <div className="absolute top-1/4 -left-32 w-80 h-80 rounded-full bg-indigo-600/10 blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-purple-600/10 blur-[130px] pointer-events-none" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#312e810a_1px,transparent_1px),linear-gradient(to_bottom,#312e810a_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_50%,#000_50%,transparent_90%)] opacity-50 pointer-events-none" />
+      {/* Atmospheric Soft Purple Glows */}
+      <div className="absolute top-1/4 -left-28 w-96 h-96 rounded-full bg-purple-600/15 blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-28 w-96 h-96 rounded-full bg-violet-600/12 blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] rounded-full bg-purple-900/10 blur-[150px] pointer-events-none" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#581c870c_1px,transparent_1px),linear-gradient(to_bottom,#581c870c_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_50%,#000_50%,transparent_90%)] opacity-60 pointer-events-none" />
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 my-auto">
-        {/* Section Header: Compact & Impactful */}
-        <div className="text-center max-w-xl mx-auto mb-6 sm:mb-8">
+        {/* Section Header: Compact, Elegant with Purple Accent */}
+        <div className="text-center max-w-xl mx-auto mb-5 sm:mb-6">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45 }}
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-indigo-500/30 bg-neutral-900/80 backdrop-blur-md mb-2 shadow-[0_0_16px_rgba(99,102,241,0.12)]"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 backdrop-blur-md mb-2 shadow-[0_0_16px_rgba(168,85,247,0.18)]"
           >
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-            <span className="text-[11px] font-mono font-medium tracking-wider text-indigo-300 uppercase">
+            <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+            <span className="text-[11px] font-mono font-medium tracking-wider text-purple-300 uppercase">
               Get In Touch
             </span>
           </motion.div>
@@ -325,8 +319,8 @@ export const Contact: React.FC = () => {
             transition={{ duration: 0.5, delay: 0.08 }}
             className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight"
           >
-            Let&apos;s Work{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-300 to-purple-400">
+            Let&apos;s Build Something{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-violet-300 to-indigo-400">
               Together
             </span>
           </motion.h2>
@@ -336,117 +330,139 @@ export const Contact: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.15 }}
-            className="text-xs sm:text-sm text-neutral-400 mt-1.5 max-w-md mx-auto"
+            className="text-xs sm:text-sm text-neutral-400 mt-1 max-w-md mx-auto"
           >
-            Have a project in mind, an opportunity, or a technical inquiry? Send a note or reach out directly.
+            Have a project in mind, an opportunity, or a technical inquiry? Drop a line or connect directly.
           </motion.p>
         </div>
 
-        {/* Balanced 2-Column Responsive Layout */}
+        {/* Balanced 2-Column Responsive Layout: Left Profile Card / Right Form */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-stretch">
-          {/* Left Column: CTA Info, Direct Contact, & Social Links (5 cols) */}
+          {/* Left Column: Modern Profile Card (5 cols) */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.15 }}
-            className="lg:col-span-5 flex flex-col justify-between gap-4"
+            className="lg:col-span-5"
           >
-            {/* Status & Availability Glass Card */}
-            <div className="relative p-5 sm:p-6 rounded-2xl bg-[#0c0d18]/80 border border-neutral-800/80 backdrop-blur-xl shadow-xl space-y-4 overflow-hidden group">
-              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
+            <div className="relative p-5 sm:p-6 rounded-2xl bg-[#0c0d18]/85 border border-purple-500/20 backdrop-blur-xl shadow-[0_0_30px_rgba(168,85,247,0.12)] h-full flex flex-col justify-between space-y-4 overflow-hidden group">
+              {/* Soft purple top highlight border */}
+              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
 
-              {/* Status Row */}
-              <div className="flex items-center justify-between gap-2 flex-wrap">
-                {PERSONAL_INFO.availableForHire && (
-                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25">
-                    <span className="relative flex h-2 w-2">
+              {/* Profile Top: Avatar + Name + Title + Status */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  {/* Avatar with purple gradient glow ring */}
+                  <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-2xl p-[2px] bg-gradient-to-tr from-purple-600 via-violet-500 to-indigo-500 shadow-[0_0_20px_rgba(168,85,247,0.35)] shrink-0">
+                    <div className="w-full h-full rounded-[14px] overflow-hidden bg-neutral-950 relative">
+                      <img
+                        src={profileImg}
+                        alt={PERSONAL_INFO.name}
+                        className="w-full h-full object-cover object-top"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-purple-950/20 to-transparent" />
+                    </div>
+
+                    {/* Online status indicator beacon */}
+                    <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
-                    </span>
-                    <span className="text-[11px] font-semibold text-emerald-400 tracking-wide uppercase">
-                      Available for Hire
+                      <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-[#0c0d18]" />
                     </span>
                   </div>
-                )}
-                <div className="inline-flex items-center gap-1.5 text-[11px] text-neutral-400">
-                  <Clock className="w-3.5 h-3.5 text-neutral-500" />
-                  <span>Replies within 24h</span>
-                </div>
-              </div>
 
-              {/* CTA pitch */}
-              <div className="space-y-1.5">
-                <h3 className="text-lg font-bold text-white tracking-tight">
-                  Ready to turn ideas into reality?
-                </h3>
-                <p className="text-xs text-neutral-300 leading-relaxed">
-                  Specialized in full-stack web applications, scalable architectures, and interactive digital experiences. Open for freelance, contract, or full-time roles.
-                </p>
-              </div>
-
-              {/* Direct Email Card */}
-              <a
-                href={`mailto:${PERSONAL_INFO.email}`}
-                className="p-3 rounded-xl bg-neutral-950/80 border border-neutral-800/90 flex items-center justify-between gap-2.5 hover:border-indigo-500/40 hover:bg-neutral-900/90 transition-all group cursor-pointer"
-                title="Send email via mail client"
-                aria-label="Send email"
-              >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/25 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                    <Mail className="w-3.5 h-3.5 text-indigo-400" />
-                  </div>
+                  {/* Name, Title & Availability */}
                   <div className="min-w-0">
-                    <p className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Direct Email</p>
-                    <p className="text-xs font-semibold text-white group-hover:text-indigo-300 transition-colors truncate">
-                      {PERSONAL_INFO.email}
+                    <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight truncate">
+                      {PERSONAL_INFO.name}
+                    </h3>
+                    <p className="text-xs sm:text-sm font-medium text-purple-300 font-mono">
+                      {PERSONAL_INFO.title}
                     </p>
+
+                    {/* Availability Status Badge */}
+                    {PERSONAL_INFO.availableForHire && (
+                      <div className="inline-flex items-center gap-1.5 px-2 py-0.5 mt-1 rounded-full bg-emerald-500/10 border border-emerald-500/25">
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400" />
+                        </span>
+                        <span className="text-[10px] font-semibold text-emerald-400 tracking-wide uppercase">
+                          Available for Hire
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="p-1.5 rounded-lg bg-indigo-600 group-hover:bg-indigo-500 text-white transition-all shadow-[0_0_12px_rgba(99,102,241,0.3)] shrink-0">
-                  <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                {/* Short Bio */}
+                <p className="text-xs text-neutral-300 leading-relaxed border-l-2 border-purple-500/40 pl-3 py-0.5 bg-purple-500/[0.03] rounded-r-lg">
+                  {PERSONAL_INFO.shortBio}
+                </p>
+
+                {/* Direct Email Card */}
+                <a
+                  href={`mailto:${PERSONAL_INFO.email}`}
+                  className="p-3 rounded-xl bg-neutral-950/70 border border-purple-500/15 flex items-center justify-between gap-2.5 hover:border-purple-500/40 hover:bg-purple-950/20 transition-all group/mail cursor-pointer"
+                  title="Send email via mail client"
+                  aria-label="Send email"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/25 flex items-center justify-center shrink-0 group-hover/mail:scale-105 transition-transform">
+                      <Mail className="w-3.5 h-3.5 text-purple-400" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-mono text-purple-400 uppercase tracking-wider">Direct Email</p>
+                      <p className="text-xs font-semibold text-white group-hover/mail:text-purple-300 transition-colors truncate">
+                        {PERSONAL_INFO.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-1.5 rounded-lg bg-purple-600/80 group-hover/mail:bg-purple-500 text-white transition-all shadow-[0_0_12px_rgba(168,85,247,0.3)] shrink-0">
+                    <ArrowUpRight className="w-3.5 h-3.5 group-hover/mail:translate-x-0.5 group-hover/mail:-translate-y-0.5 transition-transform" />
+                  </div>
+                </a>
+
+                {/* Location indicator */}
+                <div className="flex items-center gap-2 text-[11px] text-neutral-400">
+                  <MapPin className="w-3.5 h-3.5 text-purple-400/80 shrink-0" />
+                  <span>Based in {PERSONAL_INFO.location ?? 'Nepal'} · Remote worldwide</span>
                 </div>
-              </a>
-
-              {/* Location indicator */}
-              <div className="flex items-center gap-2 text-[11px] text-neutral-400 pt-0.5">
-                <MapPin className="w-3.5 h-3.5 text-neutral-500 shrink-0" />
-                <span>Based in {PERSONAL_INFO.location ?? 'Nepal'} · Remote worldwide</span>
               </div>
-            </div>
 
-            {/* Social Links Card */}
-            <div className="relative p-4 sm:p-5 rounded-2xl bg-[#0c0d18]/80 border border-neutral-800/80 backdrop-blur-xl shadow-xl overflow-hidden">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-1.5">
-                  <Sparkle className="w-3.5 h-3.5 text-indigo-400" />
-                  <span className="text-xs font-semibold text-white tracking-wide">Social Profiles</span>
+              {/* Social Links Row */}
+              <div className="pt-2 border-t border-purple-500/15 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-medium text-neutral-400 flex items-center gap-1.5">
+                    <Sparkle className="w-3 h-3 text-purple-400" />
+                    Social Links
+                  </span>
+                  <span className="text-[10px] font-mono text-purple-400/80">Connect & Follow</span>
                 </div>
-                <span className="text-[11px] text-neutral-400 font-mono">Connect & Follow</span>
-              </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {SOCIALS.map((social) => (
-                  <motion.a
-                    key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ y: -2, scale: 1.02 }}
-                    whileTap={{ scale: 0.97 }}
-                    aria-label={social.name}
-                    className={`flex flex-col items-center justify-center p-2.5 rounded-xl bg-neutral-950/70 border border-neutral-800/80 text-neutral-400 transition-all duration-200 cursor-pointer ${social.accent}`}
-                  >
-                    <div className="mb-1">{social.icon}</div>
-                    <span className="text-[11px] font-medium text-neutral-300">{social.name}</span>
-                  </motion.a>
-                ))}
+                <div className="grid grid-cols-4 gap-2">
+                  {SOCIALS.map((social) => (
+                    <motion.a
+                      key={social.name}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ y: -2, scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      aria-label={social.name}
+                      className={`flex flex-col items-center justify-center p-2 rounded-xl bg-neutral-950/70 border border-purple-500/15 text-neutral-400 transition-all duration-200 cursor-pointer ${social.hoverClass}`}
+                    >
+                      <div className="mb-0.5">{social.icon}</div>
+                      <span className="text-[10px] font-medium text-neutral-300">{social.name.split(' ')[0]}</span>
+                    </motion.a>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
 
-          {/* Right Column: Clean, Compact & Modern Contact Form (7 cols) */}
+          {/* Right Column: Clean Contact Form (7 cols) */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -454,22 +470,22 @@ export const Contact: React.FC = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="lg:col-span-7"
           >
-            <div className="relative p-5 sm:p-6 lg:p-7 rounded-2xl bg-[#0c0d18]/85 border border-neutral-800/80 backdrop-blur-xl shadow-2xl h-full flex flex-col justify-between overflow-hidden">
-              {/* Subtle top border highlight */}
-              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
+            <div className="relative p-5 sm:p-6 lg:p-7 rounded-2xl bg-[#0c0d18]/85 border border-purple-500/20 backdrop-blur-xl shadow-[0_0_30px_rgba(168,85,247,0.12)] h-full flex flex-col justify-between overflow-hidden">
+              {/* Soft purple top highlight border */}
+              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
 
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3 mb-4">
+              <div className="flex items-center justify-between border-b border-purple-500/15 pb-3 mb-3.5">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/25 flex items-center justify-center">
-                    <MessageSquare className="w-3.5 h-3.5 text-indigo-400" />
+                  <div className="w-7 h-7 rounded-lg bg-purple-500/10 border border-purple-500/25 flex items-center justify-center">
+                    <MessageSquare className="w-3.5 h-3.5 text-purple-400" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-white tracking-tight">Send a Direct Message</h4>
-                    <p className="text-[11px] text-neutral-400">Fill in the details below</p>
+                    <h4 className="text-sm font-bold text-white tracking-tight">Send a Message</h4>
+                    <p className="text-[11px] text-neutral-400">I will get back to you promptly</p>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-400">
-                  Quick Form
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-purple-300">
+                  Contact Form
                 </span>
               </div>
 
@@ -490,31 +506,31 @@ export const Contact: React.FC = () => {
                     <div className="space-y-1 max-w-xs">
                       <h4 className="text-lg font-bold text-white">Message Sent Successfully!</h4>
                       <p className="text-xs text-neutral-300">
-                        Thank you for reaching out, <span className="text-indigo-300 font-medium">{values.name || 'friend'}</span>. I will review your message and reply promptly.
+                        Thank you for reaching out, <span className="text-purple-300 font-medium">{values.name || 'friend'}</span>. I will review your message and reply promptly.
                       </p>
                     </div>
 
                     <button
                       onClick={() => {
                         setFormState('idle')
-                        setValues({ name: '', email: '', message: '' })
+                        setValues({ name: '', email: '', subject: '', message: '' })
                       }}
-                      className="mt-2 text-xs font-semibold text-indigo-400 hover:text-indigo-300 px-4 py-1.5 rounded-xl bg-indigo-500/10 border border-indigo-500/25 hover:border-indigo-500/40 transition-colors cursor-pointer"
+                      className="mt-2 text-xs font-semibold text-purple-300 hover:text-purple-200 px-4 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/25 hover:border-purple-500/40 transition-colors cursor-pointer shadow-[0_0_12px_rgba(168,85,247,0.2)]"
                     >
                       Send Another Message
                     </button>
                   </motion.div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4 my-auto">
-                    {/* Name & Email 2-column on sm+ */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <form onSubmit={handleSubmit} className="space-y-3 my-auto">
+                    {/* Name & Email in 2 columns */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {/* Name input */}
                       <div className="space-y-1">
                         <label
                           htmlFor="name"
                           className="block text-[11px] font-medium text-neutral-300"
                         >
-                          Name <span className="text-indigo-400">*</span>
+                          Name <span className="text-purple-400">*</span>
                         </label>
                         <input
                           id="name"
@@ -524,7 +540,7 @@ export const Contact: React.FC = () => {
                           value={values.name}
                           onChange={handleChange}
                           placeholder="Your full name"
-                          className="w-full px-3 py-2 rounded-xl bg-neutral-950/70 border border-neutral-800 text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500/80 focus:ring-1 focus:ring-indigo-500/50 transition-colors"
+                          className="w-full px-3 py-2 rounded-xl bg-neutral-950/70 border border-neutral-800 text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/40 transition-colors"
                         />
                       </div>
 
@@ -534,7 +550,7 @@ export const Contact: React.FC = () => {
                           htmlFor="email"
                           className="block text-[11px] font-medium text-neutral-300"
                         >
-                          Email <span className="text-indigo-400">*</span>
+                          Email <span className="text-purple-400">*</span>
                         </label>
                         <input
                           id="email"
@@ -544,9 +560,29 @@ export const Contact: React.FC = () => {
                           value={values.email}
                           onChange={handleChange}
                           placeholder="your.email@example.com"
-                          className="w-full px-3 py-2 rounded-xl bg-neutral-950/70 border border-neutral-800 text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500/80 focus:ring-1 focus:ring-indigo-500/50 transition-colors"
+                          className="w-full px-3 py-2 rounded-xl bg-neutral-950/70 border border-neutral-800 text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/40 transition-colors"
                         />
                       </div>
+                    </div>
+
+                    {/* Subject input */}
+                    <div className="space-y-1">
+                      <label
+                        htmlFor="subject"
+                        className="block text-[11px] font-medium text-neutral-300"
+                      >
+                        Subject <span className="text-purple-400">*</span>
+                      </label>
+                      <input
+                        id="subject"
+                        name="subject"
+                        type="text"
+                        required
+                        value={values.subject}
+                        onChange={handleChange}
+                        placeholder="Project Inquiry / Job Opportunity / Collaboration"
+                        className="w-full px-3 py-2 rounded-xl bg-neutral-950/70 border border-neutral-800 text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/40 transition-colors"
+                      />
                     </div>
 
                     {/* Message textarea */}
@@ -555,7 +591,7 @@ export const Contact: React.FC = () => {
                         htmlFor="message"
                         className="block text-[11px] font-medium text-neutral-300"
                       >
-                        Message <span className="text-indigo-400">*</span>
+                        Message <span className="text-purple-400">*</span>
                       </label>
                       <textarea
                         id="message"
@@ -565,15 +601,15 @@ export const Contact: React.FC = () => {
                         value={values.message}
                         onChange={handleChange}
                         placeholder="Tell me about your project, goals, or inquiries..."
-                        className="w-full px-3 py-2 rounded-xl bg-neutral-950/70 border border-neutral-800 text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500/80 focus:ring-1 focus:ring-indigo-500/50 transition-colors resize-none"
+                        className="w-full px-3 py-2 rounded-xl bg-neutral-950/70 border border-neutral-800 text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/40 transition-colors resize-none"
                       />
                     </div>
 
-                    {/* Call to action Submit Button */}
+                    {/* Send Button with Purple Gradient & Glow */}
                     <button
                       type="submit"
                       disabled={formState === 'loading'}
-                      className="w-full py-2.5 sm:py-3 px-5 rounded-xl font-semibold text-xs sm:text-sm text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:via-purple-500 hover:to-indigo-500 shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_28px_rgba(99,102,241,0.5)] transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer group"
+                      className="w-full py-2.5 sm:py-3 px-5 rounded-xl font-semibold text-xs sm:text-sm text-white bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-500 hover:via-violet-500 hover:to-indigo-500 shadow-[0_0_22px_rgba(168,85,247,0.35)] hover:shadow-[0_0_30px_rgba(168,85,247,0.55)] transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer group"
                     >
                       {formState === 'loading' ? (
                         <>
