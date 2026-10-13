@@ -6,8 +6,6 @@ import {
   CheckCircle2,
   Loader2,
   MapPin,
-  Copy,
-  Check,
   Sparkles,
   ArrowUpRight,
   MessageSquare,
@@ -276,7 +274,6 @@ const SOCIALS = [
 export const Contact: React.FC = () => {
   const [formState, setFormState] = useState<'idle' | 'loading' | 'success'>('idle')
   const [values, setValues] = useState({ name: '', email: '', message: '' })
-  const [copied, setCopied] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -290,12 +287,6 @@ export const Contact: React.FC = () => {
     // Smooth simulated dispatch (ready for EmailJS, Formspree or custom API)
     await new Promise((resolve) => setTimeout(resolve, 900))
     setFormState('success')
-  }
-
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(PERSONAL_INFO.email)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2200)
   }
 
   return (
@@ -394,41 +385,29 @@ export const Contact: React.FC = () => {
                 </p>
               </div>
 
-              {/* Direct Email Card with One-Click Copy */}
-              <div className="p-3 rounded-xl bg-neutral-950/80 border border-neutral-800/90 flex items-center justify-between gap-2.5 hover:border-neutral-700 transition-colors">
+              {/* Direct Email Card */}
+              <a
+                href={`mailto:${PERSONAL_INFO.email}`}
+                className="p-3 rounded-xl bg-neutral-950/80 border border-neutral-800/90 flex items-center justify-between gap-2.5 hover:border-indigo-500/40 hover:bg-neutral-900/90 transition-all group cursor-pointer"
+                title="Send email via mail client"
+                aria-label="Send email"
+              >
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/25 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/25 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                     <Mail className="w-3.5 h-3.5 text-indigo-400" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Direct Email</p>
-                    <p className="text-xs font-semibold text-white truncate">{PERSONAL_INFO.email}</p>
+                    <p className="text-xs font-semibold text-white group-hover:text-indigo-300 transition-colors truncate">
+                      {PERSONAL_INFO.email}
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <button
-                    onClick={handleCopyEmail}
-                    className="p-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-white border border-neutral-800 hover:border-neutral-700 transition-all cursor-pointer"
-                    title={copied ? 'Copied to clipboard!' : 'Copy email address'}
-                    aria-label="Copy email address"
-                  >
-                    {copied ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    ) : (
-                      <Copy className="w-3.5 h-3.5" />
-                    )}
-                  </button>
-                  <a
-                    href={`mailto:${PERSONAL_INFO.email}`}
-                    className="p-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-[0_0_12px_rgba(99,102,241,0.3)] cursor-pointer"
-                    title="Open mail client"
-                    aria-label="Send email"
-                  >
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </a>
+                <div className="p-1.5 rounded-lg bg-indigo-600 group-hover:bg-indigo-500 text-white transition-all shadow-[0_0_12px_rgba(99,102,241,0.3)] shrink-0">
+                  <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </div>
-              </div>
+              </a>
 
               {/* Location indicator */}
               <div className="flex items-center gap-2 text-[11px] text-neutral-400 pt-0.5">
