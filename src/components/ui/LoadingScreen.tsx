@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import logoImg from '../../assets/image/logo.png'
+import { PERSONAL_INFO } from '../../data/portfolio'
 
 interface LoadingScreenProps {
   onComplete?: () => void
@@ -94,8 +95,8 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
 
             {/* Brand Title */}
             <div className="text-center space-y-1">
-              <h3 className="text-lg font-bold text-white tracking-wider uppercase font-mono">
-                Abishek<span className="text-indigo-400">.</span>
+              <h3 className="text-base sm:text-lg font-bold text-white tracking-wider uppercase font-mono">
+                {PERSONAL_INFO.name}
               </h3>
               <p className="text-[11px] font-mono text-neutral-400 tracking-widest uppercase">
                 Interactive Portfolio

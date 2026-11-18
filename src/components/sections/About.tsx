@@ -52,7 +52,7 @@ export const About: React.FC = () => {
   return (
     <section
       id="about"
-      className="relative py-20 sm:py-28 lg:py-32 border-t border-neutral-800/80 bg-transparent overflow-hidden"
+      className="relative pt-6 sm:pt-10 lg:pt-12 pb-16 sm:pb-20 lg:pb-24 border-t border-neutral-800/80 bg-transparent overflow-hidden scroll-mt-16 sm:scroll-mt-20"
     >
       {/* Top Section Highlight Seam */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent pointer-events-none" />
@@ -90,9 +90,8 @@ export const About: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.45, delay: 0.05 }}
-                className="text-xs sm:text-sm font-mono text-indigo-400 font-semibold tracking-wider uppercase flex items-center gap-2"
+                className="text-xs sm:text-sm font-mono text-indigo-400 font-semibold tracking-wider uppercase"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
                 <span>Abishek Adhikari</span>
               </motion.div>
             </div>

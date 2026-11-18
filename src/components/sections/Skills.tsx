@@ -440,7 +440,7 @@ export const Skills: React.FC = () => {
   return (
     <section
       id="skills"
-      className="relative py-14 sm:py-20 overflow-hidden bg-transparent border-t border-neutral-800/50"
+      className="relative pt-6 sm:pt-10 lg:pt-12 pb-14 sm:pb-18 overflow-hidden bg-transparent border-t border-neutral-800/50 scroll-mt-16 sm:scroll-mt-20"
     >
       {/* ── Background: ambient neon blooms ── */}
       <div className="absolute inset-0 pointer-events-none">

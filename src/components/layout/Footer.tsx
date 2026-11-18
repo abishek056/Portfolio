@@ -34,8 +34,16 @@ export const Footer: React.FC = () => {
 
   const handleNavClick = (href: string) => {
     const id = href.replace('#', '')
+    if (id === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
     const el = document.getElementById(id)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (el) {
+      const navOffset = 68
+      const y = el.getBoundingClientRect().top + window.scrollY - navOffset
+      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' })
+    }
   }
 
   return (
@@ -53,8 +61,7 @@ export const Footer: React.FC = () => {
             <div className="flex items-center gap-3">
               <img src={logoImg} alt="Logo" className="w-8 h-8 object-contain rounded-lg border border-neutral-800" />
               <span className="font-bold text-white text-lg tracking-tight">
-                {PERSONAL_INFO.name.split(' ')[0]}
-                <span className="text-indigo-400">.</span>
+                {PERSONAL_INFO.name}
               </span>
             </div>
             <p className="text-sm text-neutral-500 leading-relaxed max-w-xs">

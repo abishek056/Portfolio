@@ -285,7 +285,7 @@ export const Contact: React.FC = () => {
   return (
     <section
       id="contact"
-      className="relative min-h-[calc(100vh-4.5rem)] py-6 sm:py-10 lg:py-12 border-t border-neutral-800/70 bg-[#07080e] overflow-hidden flex flex-col justify-center"
+      className="relative min-h-[calc(100vh-4.5rem)] pt-6 sm:pt-10 pb-8 sm:pb-12 border-t border-neutral-800/70 bg-[#07080e] overflow-hidden flex flex-col justify-center scroll-mt-16 sm:scroll-mt-20"
     >
       {/* Spider-Web & Particle Canvas Background */}
       <SpiderWebCanvas />

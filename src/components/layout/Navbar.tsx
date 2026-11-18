@@ -51,8 +51,16 @@ export const Navbar: React.FC = () => {
   const handleNavClick = (href: string) => {
     setMobileOpen(false)
     const id = href.replace('#', '')
+    if (id === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
     const el = document.getElementById(id)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (el) {
+      const navOffset = 68
+      const y = el.getBoundingClientRect().top + window.scrollY - navOffset
+      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' })
+    }
   }
 
   return (
@@ -92,8 +100,7 @@ export const Navbar: React.FC = () => {
               <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 border-2 border-neutral-950 shadow-[0_0_6px_#10b981]" />
             </motion.div>
             <span className="font-bold text-lg text-white tracking-tight group-hover:text-indigo-300 transition-colors duration-300">
-              {PERSONAL_INFO.name.split(' ')[0]}
-              <span className="text-indigo-400">.</span>
+              {PERSONAL_INFO.name}
             </span>
           </motion.a>
 

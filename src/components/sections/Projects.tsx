@@ -32,7 +32,7 @@ export const Projects: React.FC = () => {
   return (
     <section
       id="projects"
-      className="relative py-20 sm:py-28 lg:py-32 border-t border-neutral-800/80 bg-transparent overflow-hidden"
+      className="relative pt-6 sm:pt-10 lg:pt-12 pb-16 sm:pb-20 lg:pb-24 border-t border-neutral-800/80 bg-transparent overflow-hidden scroll-mt-16 sm:scroll-mt-20"
     >
       {/* Top Section Highlight Seam */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent pointer-events-none" />
